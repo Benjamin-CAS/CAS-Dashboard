@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">CAS Dashboard</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_box_title">CleanAir Monitoring Sys tem - Login</string>
+    <string name="company_name">Company</string>
+    <string name="user_name">User Name</string>
+    <string name="password">password</string>
+    <string name="login_btn_text">     Login     </string>
+    <string name="remember_credentials">Remember Credentials</string>
+    <string name="locked_mode">Locked Mode</string>
+    <string name="spinner_tip">Location</string>
+</resources>
