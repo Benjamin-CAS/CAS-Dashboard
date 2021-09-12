@@ -5,9 +5,19 @@
     <string name="login_box_title">CleanAir Monitoring Sys tem - Login</string>
     <string name="company_name">Company</string>
     <string name="user_name">User Name</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="login_btn_text">     Login     </string>
     <string name="remember_credentials">Remember Credentials</string>
     <string name="locked_mode">Locked Mode</string>
     <string name="spinner_tip">Location</string>
+    <string name="please_loading_text">Loading...</string>
+    <string name="air_quality">Air Quality</string>
+    <string name="indoor_text">INDOOR:</string>
+    <string name="pm_value_text">PM2.5</string>
+    <string name="unit_pm">μg/m3</string>
+    <string name="moderate">Moderate</string>
+    <string name="tvoc">TVOC</string>
+    <string name="co2">CO2</string>
+    <string name="unit_tvoc">mg/m³</string>
+    <string name="unit_co2">ppm</string>
 </resources>

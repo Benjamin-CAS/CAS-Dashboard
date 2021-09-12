@@ -9,4 +9,12 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="blue">#006FB7</color>
+    <color name="light_text_color">#212121</color>
+    <color name="dark_text_color">#EEEEEE</color>
+    <color name="btn_light_text_color">#FAFAFA</color>
+    <color name="btn_dark_text_color">#EEEEEE</color>
+    <color name="gray">#BDBDBD</color>
+    <color name="progress_color">#E6D901</color>
+    <color name="progress_bgc_color">#555555</color>
+    <color name="door_data_bgc">#1B1008</color>
 </resources>

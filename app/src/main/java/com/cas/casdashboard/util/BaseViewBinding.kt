@@ -40,6 +40,7 @@ class FragmentBindingDelegate<VB : ViewBinding>(
 
 inline fun <reified VB : ViewBinding> Activity.inflate() = lazy {
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
+
 }
 
 inline fun <reified VB : ViewBinding> Dialog.inflate() = lazy {
