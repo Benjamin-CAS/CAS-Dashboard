@@ -1,24 +1,61 @@
 package com.cas.casdashboard.frg
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
-import com.cas.casdashboard.https.HttpsRepo
+import android.util.Log
+import androidx.lifecycle.*
+import com.cas.casdashboard.https.AppRepo
+import com.cas.casdashboard.https.util.StateLiveData
+import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
+import com.cas.casdashboard.https.response.decode.LoginResultItem
+import com.cas.casdashboard.model.room.entity.AccountInformation
+import com.cas.casdashboard.model.room.entity.Administrator
 import com.cas.casdashboard.model.room.entity.CompanyAllEntity
+import com.cas.casdashboard.util.MMKVPreference
+import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginFrgViewModel @Inject constructor(private val httpRepo: HttpsRepo): ViewModel() {
+class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
     private var searchCompany = MutableLiveData<String>()
+    private val mk: MMKV = MMKV.defaultMMKV()
+    private val _isRememberCredentials = MutableLiveData(false)
+    private val _isLockedMode = MutableLiveData(false)
+    val isRememberCredentials get() = _isRememberCredentials
+    val isLockedMode get() = _isLockedMode
+    val loginResult = StateLiveData<List<LoginResultItem>>()
+    val getCompanyLocationID = StateLiveData<CompanyLocationDecode>()
     fun getAllCompany() = httpRepo.observeAllCompany()
+    fun postIsRememberCredentialsValue() = _isRememberCredentials.postValue(mk.decodeBool(IS_REMEMBER_CREDENTIALS))
+    fun getIsRememberCredentialsValue() = mk.decodeBool(IS_REMEMBER_CREDENTIALS)
+    fun encodeIsRememberCredentialsValue(value:Boolean) = mk.encode(IS_REMEMBER_CREDENTIALS,value)
+    fun postIsLockedModeValue() = _isLockedMode.postValue(mk.decodeBool(IS_LOCKED_MODE))
+    fun encodeIsLockedModeValue(value:Boolean) = mk.encode(IS_LOCKED_MODE,value)
+    fun searchCompany(query: String) = searchCompany.postValue(query)
     fun getSearchCompany() = searchCompany.switchMap {
         if (it.isNullOrBlank()) emptyFlow<List<CompanyAllEntity>>().asLiveData()
         else httpRepo.getSearchCompanyAllName(it).asLiveData()
     }
-    fun searchCompany(query: String){
-        searchCompany.postValue(query)
+    fun getCompanyLocation(companyId:String) = viewModelScope.launch(Dispatchers.IO) {
+        httpRepo.getCompanyLocation(companyId,getCompanyLocationID)
+    }
+    fun insertAdministrator(companyNameSearch:String,companyId:String,spinner:String,locationId:String,username: String,password: String) =
+         viewModelScope.launch(Dispatchers.IO) {
+             httpRepo.insertAdministrator(Administrator(companyNameSearch,companyId,spinner,locationId,username,password))
+         }
+    fun getAdministrator(query: String) = httpRepo.getAdministrator(query).asLiveData()
+
+    fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = viewModelScope.launch(Dispatchers.IO) {
+        httpRepo.insertLoginResultItem(loginResultItem)
+    }
+    fun getLogin(locationId:String,username:String,password:String) = viewModelScope.launch(Dispatchers.IO) {
+        httpRepo.getLogin(locationId,username,password,loginResult)
+    }
+    companion object {
+        const val TAG = "LoginFrgViewModel"
+        private const val IS_REMEMBER_CREDENTIALS = "IS_REMEMBER_CREDENTIALS"
+        private const val IS_LOCKED_MODE = "IS_LOCKED_MODE"
     }
 }

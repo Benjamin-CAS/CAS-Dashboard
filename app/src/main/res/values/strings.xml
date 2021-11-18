@@ -20,4 +20,13 @@
     <string name="co2">CO2</string>
     <string name="unit_tvoc">mg/m³</string>
     <string name="unit_co2">ppm</string>
+    <string name="description_unknown_error">Unknown Error！</string>
+    <string name="data_is_Null">Data is Null!</string>
+    <string name="connection_error">Connection failed!</string>
+    <string name="time_out_error">Time out!</string>
+    <string name="http_status_error">Server network status exception!</string>
+    <string name="time">
+        Last Updated On:
+    </string>
+
 </resources>

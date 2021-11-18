@@ -5,8 +5,11 @@ import android.util.Log
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.cas.casdashboard.https.Api
+import com.cas.casdashboard.https.util.ParamsLogInterceptor
 import com.cas.casdashboard.model.room.dao.CompanyAllEntityDao
 import com.cas.casdashboard.model.database.CasDatabase
+import com.cas.casdashboard.model.room.dao.AdministratorDao
+import com.cas.casdashboard.model.room.dao.LoginResultItemDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,6 +18,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -26,16 +30,18 @@ object DI {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(
-                OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor { message ->
-                    Log.e(TAG, "provideRetrofit: -----------------")
-                    Log.e(TAG, "provideRetrofit: $message")
-                    Log.e(TAG, "provideRetrofit: -----------------")
-                }
-                    .apply {
+                OkHttpClient.Builder()
+                    .writeTimeout(90, TimeUnit.SECONDS)
+                    .readTimeout(90, TimeUnit.SECONDS)
+                    .addInterceptor(ParamsLogInterceptor())
+                    .addInterceptor(HttpLoggingInterceptor{
+                        Log.e(TAG, "provideRetrofit: $it")
+                    }.apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })
                     .build()
             )
+//            .addCallAdapterFactory(ApiResultCallAdapterFactory())
             .addConverterFactory(
                 GsonConverterFactory.create()
             ).build()
@@ -55,7 +61,12 @@ object DI {
     @Singleton
     fun provideCompanyAllEntityDao(casDatabase: CasDatabase): CompanyAllEntityDao =
         casDatabase.companyAllEntityDao()
-
+    @Provides
+    @Singleton
+    fun provideAdministrator(casDatabase: CasDatabase):AdministratorDao = casDatabase.administratorDao()
+    @Provides
+    @Singleton
+    fun provideLoginResultItemDao(casDatabase: CasDatabase): LoginResultItemDao = casDatabase.loginResultItemDao()
     @Provides
     @Singleton
     fun provideWorkManager(app: Application): WorkManager =

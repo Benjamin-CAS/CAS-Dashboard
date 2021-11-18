@@ -3,17 +3,27 @@ package com.cas.casdashboard.util
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
-import android.util.Base64
-import android.util.Log
 import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
-import com.cas.casdashboard.https.Api.Companion.LOCATION_INFO_METHOD_FOR_KEY
+import androidx.lifecycle.MutableLiveData
+import java.text.DecimalFormat
 
 
 object Constants {
     const val API_APP_ID = 1
     const val NONCE = "aa"
     var isLoginView = false
+    const val L_TIME_KEY = "ltime"
+    const val PAYLOAD_KEY = "pl"
+    var companyName = ""
+    var companyLogo = ""
+    private const val IMG_LOGO_URL = "https://monitor.cleanairspaces.com/assets/images/logo/"
+    private const val IMG_BACKGROUND_IMAGE_URL = "https://monitor.cleanairspaces.com/assets/images/picture/"
+    val isLockedMode = MutableLiveData(true)
+    val String.BACKGROUND
+        get() = IMG_BACKGROUND_IMAGE_URL.plus(this)
+    val String.LOGO
+        get() = IMG_LOGO_URL.plus(this)
     /**
      * 隐藏软键盘
      */
@@ -32,38 +42,19 @@ object Constants {
             TypedValue.COMPLEX_UNIT_DIP, this,
             Resources.getSystem().displayMetrics
         )
-    private suspend fun toBase64Encoding(encryptedPayload: String) =
-        Base64.encodeToString(encryptedPayload.encodeToByteArray(), Base64.NO_PADDING).trim()
-    suspend fun getEncryptedEncodedPayloadForIndoorLocation(timeStamp: String): String {
-        val key = "${LOCATION_INFO_METHOD_FOR_KEY}$timeStamp"
-        val payload = "ltime$timeStamp"
-        Log.e(TAG, "KEY payload: $key $payload")
-        val casEncrypted = doCASEncryptOrDecrypt(payload = payload, key = key)
-        Log.e(
-            TAG,
-            "getEncryptedEncodedPayloadForIndoorLocation(timeStamp: $timeStamp) key $key payload $payload encrypted $casEncrypted"
+    val Int.textPx:Float
+        get() = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,this.toFloat(),
+            Resources.getSystem().displayMetrics
         )
-        return toBase64Encoding(casEncrypted)
-    }
-    private fun doCASEncryptOrDecrypt(payload: String, key: String): String {
-        val trueKey = calculateEncKey(payload, key)
-        var encodedStr = ""
-        for ((index, letter) in payload.withIndex()) {
-            val keyForCurrentPos = trueKey[index]
-            val code = (keyForCurrentPos.code).xor(letter.code)
-            encodedStr += if (code < 32 || code > 126) {
-                letter
-            } else code.toChar()
-        }
-        return encodedStr
-    }
-    private fun calculateEncKey(payload: String, key: String): String {
-        var trueKey = ""
-        val payLoadLength = payload.length
-        while (trueKey.length < payLoadLength) {
-            trueKey += key
-        }
-        return trueKey.substring(0, payload.length)
-    }
+    val Float.textPx
+        get() = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, this,
+            Resources.getSystem().displayMetrics
+        )
+    val Double.formats: String
+        get() = DecimalFormat("0.#").format(this)
+    val Float.formats: String
+        get() = DecimalFormat("0.#").format(this)
     private const val TAG = "Constants"
 }

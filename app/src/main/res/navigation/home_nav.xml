@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav"
+    app:startDestination="@id/monitoringFragment">
+
+    <fragment
+        android:id="@+id/monitoringFragment"
+        android:name="com.cas.casdashboard.frg.MonitoringFragment"
+        android:label="fragment_monitoring"
+        tools:layout="@layout/fragment_monitoring" />
+    <fragment
+        android:id="@+id/testFragment"
+        android:name="com.cas.casdashboard.frg.TestFragment"
+        android:label="fragment_test"
+        tools:layout="@layout/fragment_test" />
+</navigation>

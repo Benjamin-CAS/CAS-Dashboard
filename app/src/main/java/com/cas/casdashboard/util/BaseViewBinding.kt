@@ -2,6 +2,7 @@ package com.cas.casdashboard.util
 
 import android.app.Activity
 import android.app.Dialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -19,7 +20,7 @@ class FragmentBindingDelegate<VB : ViewBinding>(
     private val clazz: Class<VB>
 ) : ReadOnlyProperty<Fragment, VB> {
     private var isInitialized = false
-    private var binding: VB ?=null
+    private var binding: VB ?= null
 
     override fun getValue(thisRef: Fragment, property: KProperty<*>): VB {
         if (!isInitialized) {
@@ -33,21 +34,20 @@ class FragmentBindingDelegate<VB : ViewBinding>(
             binding = clazz.getMethod("bind", View::class.java).invoke(null, thisRef.requireView()) as? VB
             isInitialized = true
         }
-
         return binding!!
     }
 }
+@Suppress("UNCHECKED_CAST")
+inline fun <reified VB : ViewBinding> inflateBinding(layoutInflater: LayoutInflater) =
+    VB::class.java.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
 
 inline fun <reified VB : ViewBinding> Activity.inflate() = lazy {
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
-
 }
 
 inline fun <reified VB : ViewBinding> Dialog.inflate() = lazy {
     inflateBinding<VB>(layoutInflater).apply { setContentView(root) }
 }
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified VB : ViewBinding> inflateBinding(layoutInflater: LayoutInflater) =
-    VB::class.java.getMethod("inflate", LayoutInflater::class.java).invoke(null, layoutInflater) as VB
+
 

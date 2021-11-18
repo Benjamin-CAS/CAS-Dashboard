@@ -17,4 +17,11 @@
     <color name="progress_color">#E6D901</color>
     <color name="progress_bgc_color">#555555</color>
     <color name="door_data_bgc">#1B1008</color>
+    <!--- AQI COLORS -->
+    <color name="aqi_good">#33B266</color>
+    <color name="aqi_moderate">#E5D800</color>
+    <color name="aqi_g_unhealthy">#FF9900</color>
+    <color name="aqi_unhealthy">#FF0000</color>
+
+    <color name="progress_bar">#E6D901</color>
 </resources>
