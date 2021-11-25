@@ -1,15 +1,12 @@
 package com.cas.casdashboard.frg
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.cas.casdashboard.https.AppRepo
-import com.cas.casdashboard.https.util.StateLiveData
 import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
 import com.cas.casdashboard.https.response.decode.LoginResultItem
-import com.cas.casdashboard.model.room.entity.AccountInformation
+import com.cas.casdashboard.https.util.StateLiveData
 import com.cas.casdashboard.model.room.entity.Administrator
 import com.cas.casdashboard.model.room.entity.CompanyAllEntity
-import com.cas.casdashboard.util.MMKVPreference
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +17,13 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
     private var searchCompany = MutableLiveData<String>()
+    private val _loadingObserver = MutableLiveData<Boolean>()
+    val loadingObserver:LiveData<Boolean> get() = _loadingObserver
     private val mk: MMKV = MMKV.defaultMMKV()
     private val _isRememberCredentials = MutableLiveData(false)
     private val _isLockedMode = MutableLiveData(false)
-    val isRememberCredentials get() = _isRememberCredentials
-    val isLockedMode get() = _isLockedMode
+    val isRememberCredentials:LiveData<Boolean> get() = _isRememberCredentials
+    val isLockedMode:LiveData<Boolean> get() = _isLockedMode
     val loginResult = StateLiveData<List<LoginResultItem>>()
     val getCompanyLocationID = StateLiveData<CompanyLocationDecode>()
     fun getAllCompany() = httpRepo.observeAllCompany()

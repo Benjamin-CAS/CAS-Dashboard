@@ -24,4 +24,6 @@
     <color name="aqi_unhealthy">#FF0000</color>
 
     <color name="progress_bar">#E6D901</color>
+
+    <color name="monitoring_card_bgc">#2F6EB2</color>
 </resources>

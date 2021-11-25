@@ -16,7 +16,6 @@ object Constants {
     const val L_TIME_KEY = "ltime"
     const val PAYLOAD_KEY = "pl"
     var companyName = ""
-    var companyLogo = ""
     private const val IMG_LOGO_URL = "https://monitor.cleanairspaces.com/assets/images/logo/"
     private const val IMG_BACKGROUND_IMAGE_URL = "https://monitor.cleanairspaces.com/assets/images/picture/"
     val isLockedMode = MutableLiveData(true)

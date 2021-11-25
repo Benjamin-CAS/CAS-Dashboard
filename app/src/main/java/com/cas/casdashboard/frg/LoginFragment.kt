@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
-    private lateinit var locationId: String
+    private var locationId: String = ""
     private lateinit var companyId: String
     private lateinit var textAnimation: Animation
     private lateinit var mUsername: String
@@ -47,7 +48,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             object : IStateObserver<CompanyLocationDecode>() {
                 override fun onDataChange(data: CompanyLocationDecode) {
                     if (!data.isNullOrEmpty()) {
-                        Log.e(TAG, "onDataChange CompanyLocationDecode: $data")
                         locationAdapter.submitList(data)
                         binding.loginBox.locationRecyclerview.isVisible = true
                     } else {
@@ -73,8 +73,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
             })
         if (loginViewModel.getIsRememberCredentialsValue()) {
-            loginViewModel.getAdministrator(companyAllEntity.companyAllName)
-                .observe(viewLifecycleOwner) { administrator ->
+            loginViewModel.getAdministrator(companyAllEntity.companyAllName).observe(viewLifecycleOwner) { administrator ->
                     if (administrator != null) {
                         binding.loginBox.apply {
                             companyNameSearch.setText(administrator.companyName)
@@ -106,9 +105,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     override fun initView() {
         isLoginView = true
         textAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.text_alpha_anim)
-        loginViewModel.getSearchCompany().observe(viewLifecycleOwner) {
-            companyListRvAdapter.submitList(it)
-        }
+        loginViewModel.getSearchCompany().observe(viewLifecycleOwner) { companyListRvAdapter.submitList(it) }
         loginViewModel.postIsRememberCredentialsValue()
         loginViewModel.postIsLockedModeValue()
         loginApiResult()
@@ -138,6 +135,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 delay(10000)
             }
         }
+        loginViewModel.loadingObserver.observe(viewLifecycleOwner){
+            binding.apply {
+                loginBox.maskLoading.isVisible = it
+                loginBox.loginBtn.isClickable = !it
+                loadingText.isVisible = it
+                loginBox.progressBar.isVisible = it
+                if (it)loadingText.startAnimation(textAnimation) else loadingText.clearAnimation()
+            }
+        }
     }
     private fun viewBindingApply() = with(binding) {
         root.setOnClickListener {
@@ -146,17 +152,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 locationRecyclerview.isVisible = false
             }
         }
-        loadingText.isVisible = false
+        loginViewModel.loadingObserver.postValue(false)
         loginBox.apply {
-            maskLoading.isVisible = false
-            progressBar.isVisible = false
-            loginViewModel.isRememberCredentials.observe(viewLifecycleOwner) {
-                rememberCredentialsSwitch.isChecked = it
-            }
-
-            loginViewModel.isLockedMode.observe(viewLifecycleOwner) {
-                lockedModeSwitch.isChecked = it
-            }
+            loginViewModel.isRememberCredentials.observe(viewLifecycleOwner) { rememberCredentialsSwitch.isChecked = it }
+            loginViewModel.isLockedMode.observe(viewLifecycleOwner) { lockedModeSwitch.isChecked = it }
             companyListRv.apply {
                 layoutManager = GridLayoutManager(requireContext(), 1)
                 adapter = companyListRvAdapter
@@ -182,27 +181,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             loginBtn.apply {
                 icon = null
                 setOnClickListener {
-                    maskLoading.isVisible = true
-                    loadingText.startAnimation(textAnimation)
-                    isClickable = false
-                    loadingText.isVisible = true
-                    progressBar.isVisible = true
-                    Snackbar.make(
-                        binding.root,
-                        "Please wait for the server to respond......",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-//                        loginViewModel.getLoginResult()
+                    loginViewModel.loadingObserver.postValue(true)
                     mUsername = username.text.toString()
                     mPassword = password.text.toString()
                     if (locationId.isNotBlank() && mUsername.isNotBlank() && mUsername.isNotBlank()) {
                         loginViewModel.getLogin(locationId, mUsername, mPassword)
-                    } else
-                        Snackbar.make(
-                            binding.root,
-                            "Username or password is null",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
+                    } else {
+                        Snackbar.make(binding.root, "Username or password is null", Snackbar.LENGTH_SHORT).show()
+                        loginViewModel.loadingObserver.postValue(false)
+                    }
                 }
             }
         }
@@ -212,48 +199,40 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         loginViewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
                 override fun onDataChange(data: List<LoginResultItem>) {
                     Log.e(TAG, "onDataChange: $data")
-                    binding.apply {
-                        loadingText.isVisible = false
-                        loginBox.apply {
-                            progressBar.isVisible = false
-                            maskLoading.isVisible = false
-                            loginViewModel.insertAdministrator(
-                                companyNameSearch.text.toString(),
-                                companyId,
-                                spinner.text.toString(),
-                                locationId,
-                                mUsername,
-                                mPassword
-                            )
-                            loginViewModel.insertLoginResultItem(data)
-                            findNavController().navigate(R.id.homeFragment)
-                        }
+                    loginViewModel.loadingObserver.postValue(false)
+                    binding.loginBox.apply {
+                        loginViewModel.insertAdministrator(
+                            companyNameSearch.text.toString(),
+                            companyId,
+                            spinner.text.toString(),
+                            locationId,
+                            mUsername,
+                            mPassword
+                        )
                     }
+                    loginViewModel.insertLoginResultItem(data)
+                    findNavController().navigate(R.id.homeFragment)
                 }
 
                 override fun onDataEmpty() {
                     Log.e(TAG, "onDataEmpty: ")
-                    Snackbar.make(
-                        binding.root,
-                        "No details of the company",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                    binding.loadingText.isVisible = false
-                    binding.loginBox.apply {
-                        progressBar.isVisible = false
-                        maskLoading.isVisible = false
-                    }
+                    Snackbar.make(binding.root, "No details of the company", Snackbar.LENGTH_SHORT).show()
+                    loginViewModel.loadingObserver.postValue(false)
                 }
 
                 override fun onFailed(msg: String) {
                     Log.e(TAG, "onFailed: $msg")
+                    loginViewModel.loadingObserver.postValue(false)
                 }
 
                 override fun onError(error: Throwable) {
                     Log.e(TAG, "onError: $error")
+                    loginViewModel.loadingObserver.postValue(false)
                 }
 
-                override fun onLoading() {}
+                override fun onLoading() {
+
+                }
 
             })
     }

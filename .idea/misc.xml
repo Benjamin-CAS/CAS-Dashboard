@@ -7,20 +7,25 @@
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/drawer_layout_item_bgc.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/ic_baseline_apps_24.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/ic_jiazai.xml" value="0.1125" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/line_shape.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/loading_animated_vector.xml" value="0.1" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/monitoring_card_bgc.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/my_vector.xml" value="0.1125" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/rv_top_line.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/side_bar_item_selector.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/drawable/side_bar_ripple.xml" value="0.188671875" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/chart_dialog.xml" value="0.16" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/custom_attach__edittext_popup.xml" value="0.1" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/drawer_layout_rv_item.xml" value="0.176" />
-        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_home.xml" value="0.152" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_dashboard.xml" value="0.16944444444444445" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_home.xml" value="0.136" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_login.xml" value="0.152" />
-        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_monitoring.xml" value="0.12" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/fragment_monitoring.xml" value="0.2" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/item.xml" value="0.1" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/location_item.xml" value="0.136" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/login_include_view.xml" value="0.2" />
+        <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/monitoring_device_status_item.xml" value="0.2" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/popup_rv.xml" value="0.10859375" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/popup_rv_item.xml" value="0.1765625" />
         <entry key="..\:/Work/AndroidProject/CASDashboard/app/src/main/res/layout/rv.xml" value="0.1" />

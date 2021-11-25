@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.Gravity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -22,8 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val homeFrgViewModel by viewModels<HomeFrgViewModel>()
-    private val sideBarAdapter = SideBarAdapter{
-
+    private val sideBarAdapter = SideBarAdapter {
+        replaceFrg(MonitoringFragment())
     }
     override val binding: FragmentHomeBinding by bindView()
     override fun initView() {
@@ -31,35 +32,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         viewBindingApply()
         homeFrgViewModel.getLoginResultItem().observe(viewLifecycleOwner){
             sideBarAdapter.apply {
-                submitList(it){
-                    if (it.isNotEmpty()) setPosition()
-                }
+                submitList(it)
             }
         }
     }
     @SuppressLint("WrongConstant")
-    private fun viewBindingApply(){
-        binding.apply {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            menuBtn.setOnClickListener {
-                binding.drawerLayout.openDrawer(Gravity.START)
-            }
-            button2.setOnClickListener {
-//                ChartDialog().show(childFragmentManager,"Chart")
-                childFragmentManager.beginTransaction().replace(R.id.home_nav_host,TestFragment()).commit()
-            }
-            sideRecyclerview.apply {
-                layoutManager = GridLayoutManager(requireContext(),1)
-                adapter = sideBarAdapter
-            }
+    private fun viewBindingApply() = with(binding){
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        menuBtn.setOnClickListener {
+            binding.drawerLayout.openDrawer(Gravity.START)
         }
-
+        sideRecyclerview.apply {
+            layoutManager = GridLayoutManager(requireContext(),1)
+            adapter = sideBarAdapter
+        }
+        airQuality.setOnClickListener {
+            findNavController().navigate(R.id.homeFragment)
+        }
         Constants.isLockedMode.observe(viewLifecycleOwner){
-            binding.menuBtn.isClickable = !it
+            menuBtn.isClickable = !it
         }
     }
-
+    private fun replaceFrg(frg:Fragment) = childFragmentManager.beginTransaction().replace(R.id.home_nav_host,frg).commit()
     companion object {
         const val TAG = "HomeFragment"
+
     }
 }

@@ -18,7 +18,7 @@ import javax.inject.Inject
  * @date :2021.9.18 17:01
  */
 @HiltViewModel
-class MonitoringFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
+class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
     val locDataGetIpad = StateLiveData<LocGetData>()
     val getMonitorLocInfo = StateLiveData<GetMonitorLocInfo>()
     fun getLocDataGetIpad(
