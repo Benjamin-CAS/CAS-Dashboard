@@ -1,7 +1,7 @@
 package com.cas.casdashboard.frg
 
 import androidx.lifecycle.*
-import com.cas.casdashboard.https.AppRepo
+import com.cas.casdashboard.https.repo.AppRepo
 import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
 import com.cas.casdashboard.https.response.decode.LoginResultItem
 import com.cas.casdashboard.https.util.StateLiveData
@@ -10,8 +10,10 @@ import com.cas.casdashboard.model.room.entity.CompanyAllEntity
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +46,10 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
          viewModelScope.launch(Dispatchers.IO) {
              httpRepo.insertAdministrator(Administrator(companyNameSearch,companyId,spinner,locationId,username,password))
          }
-    fun getAdministrator(query: String) = httpRepo.getAdministrator(query).asLiveData()
+    fun getAdministrator(query: String,success:(Administrator) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        val admin = httpRepo.getAdministrator(query)
+        withContext(Dispatchers.Main){ success(admin) }
+    }
 
     fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = viewModelScope.launch(Dispatchers.IO) {
         httpRepo.insertLoginResultItem(loginResultItem)
@@ -52,6 +57,7 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
     fun getLogin(locationId:String,username:String,password:String) = viewModelScope.launch(Dispatchers.IO) {
         httpRepo.getLogin(locationId,username,password,loginResult)
     }
+    fun setLoadingObserver(value:Boolean) = _loadingObserver.postValue(value)
     companion object {
         const val TAG = "LoginFrgViewModel"
         private const val IS_REMEMBER_CREDENTIALS = "IS_REMEMBER_CREDENTIALS"

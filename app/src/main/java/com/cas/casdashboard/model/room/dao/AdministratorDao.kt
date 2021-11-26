@@ -17,5 +17,5 @@ interface AdministratorDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAdministrator(administrator: Administrator)
     @Query("SELECT * FROM ADMINISTRATOR WHERE companyName LIKE '%' || :query || '%'")
-    fun getAdministrator(query:String):Flow<Administrator>
+    suspend fun getAdministrator(query:String):Administrator
 }

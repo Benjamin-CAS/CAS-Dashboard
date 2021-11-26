@@ -4,6 +4,7 @@ package com.cas.casdashboard.frg
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.cas.casdashboard.R
 import com.cas.casdashboard.databinding.FragmentDashboardBinding
@@ -17,19 +18,17 @@ import com.cas.casdashboard.util.Constants.LOGO
 import com.cas.casdashboard.util.bindView
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragment_dashboard){
-    private val monitoringViewModel by viewModels<DashBoardFrgViewModel>()
+    private val dashBoardFrgViewModel by viewModels<DashBoardFrgViewModel>()
     private val mk: MMKV = MMKV.defaultMMKV()
     override val binding by bindView<FragmentDashboardBinding>()
     override fun initView() {
         Constants.isLockedMode.postValue(mk.decodeBool("IS_LOCKED_MODE"))
-        monitoringViewModel.getAdministrator(Constants.companyName).observe(viewLifecycleOwner){
-            monitoringViewModel.getLocDataGetIpad(it.companyId,it.locationId,it.username,it.password)
-            monitoringViewModel.getMonitorLocInfo(it.companyId,it.locationId)
-        }
-        monitoringViewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
+        dashBoardFrgViewModel.getAdministrator(Constants.companyName)
+        dashBoardFrgViewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
             override fun onDataChange(data: LocGetData) {
                 Log.e(HomeFragment.TAG, "onDataChange: $data")
                 binding.apply {
@@ -91,13 +90,14 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
             }
 
         })
-        monitoringViewModel.getMonitorLocInfo.observe(viewLifecycleOwner,object : IStateObserver<GetMonitorLocInfo>(){
+        dashBoardFrgViewModel.getMonitorLocInfo.observe(viewLifecycleOwner,object : IStateObserver<GetMonitorLocInfo>(){
             override fun onDataChange(data: GetMonitorLocInfo) {
                 Log.e(TAG, "onDataChange: $data")
                 binding.apply {
                     backgroundImage.load(data[0].picture.BACKGROUND)
                     companyLogo.load(data[0].logo.LOGO)
                 }
+                dashBoardFrgViewModel.insertGetMonitorLocInfo(data)
             }
             override fun onDataEmpty() {}
             override fun onFailed(msg: String) {}

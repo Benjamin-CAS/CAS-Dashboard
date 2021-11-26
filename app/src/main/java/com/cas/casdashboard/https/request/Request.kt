@@ -30,4 +30,8 @@ data class RequestGetExtLocInfo(
     val c:String,
     val l:String
 )
-
+data class RequestGetInterfaceDetails(
+    val d:String,
+    val user:String,
+    val password:String
+)

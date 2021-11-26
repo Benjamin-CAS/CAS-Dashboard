@@ -2,18 +2,12 @@ package com.cas.casdashboard
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import com.cas.casdashboard.bg_work.RefreshLocationWorker
-import com.cas.casdashboard.https.AppRepo
-import com.cas.casdashboard.https.util.StateLiveData
+import com.cas.casdashboard.https.repo.AppRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val httpRepo: AppRepo, private val worker: WorkManager): ViewModel() {

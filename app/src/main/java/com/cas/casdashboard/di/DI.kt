@@ -9,6 +9,7 @@ import com.cas.casdashboard.https.util.ParamsLogInterceptor
 import com.cas.casdashboard.model.room.dao.CompanyAllEntityDao
 import com.cas.casdashboard.model.database.CasDatabase
 import com.cas.casdashboard.model.room.dao.AdministratorDao
+import com.cas.casdashboard.model.room.dao.GetMonitorLocInfoDao
 import com.cas.casdashboard.model.room.dao.LoginResultItemDao
 import dagger.Module
 import dagger.Provides
@@ -67,6 +68,9 @@ object DI {
     @Provides
     @Singleton
     fun provideLoginResultItemDao(casDatabase: CasDatabase): LoginResultItemDao = casDatabase.loginResultItemDao()
+    @Provides
+    @Singleton
+    fun provideGetMonitorLocInfoDao(casDatabase: CasDatabase):GetMonitorLocInfoDao = casDatabase.getMonitorLocInfoDao()
     @Provides
     @Singleton
     fun provideWorkManager(app: Application): WorkManager =

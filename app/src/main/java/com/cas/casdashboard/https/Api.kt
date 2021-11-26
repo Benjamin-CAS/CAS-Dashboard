@@ -45,14 +45,22 @@ interface Api{
         @Query("nonce") nonce:String = NONCE,
         @Body pl:JsonObject
     ): Encode
+    @POST("/index.php/api/approuter")
+    suspend fun getInterfaceDetails(
+        @Query("app_id") app_id:Int = API_APP_ID,
+        @Query("method") method:String = GET_INTERFACE_DETAILS,
+        @Query("nonce") nonce:String = NONCE,
+        @Body pl:JsonObject
+    ):Encode
     companion object {
         const val COM_ALL = "ComAll"
         const val LOCATION_INFO_METHOD_FOR_KEY = "GetDevInfoByIdCAS"
         const val LOC_GET_IPAD = "LocGetIpad"
         const val LOC_GET_IPAD_FOR_KEY = "LocGetIpadCAS"
-        const val GET_LOGIN_INTERFACE = "GetInterface"
+        const val GET_LOGIN_INTERFACE = "GetInterface"    // sideBar
         const val GET_LOGIN_INTERFACE_FOR_KET = "GetInterfaceCAS"
         const val GET_INTERFACE_DETAILS = "GetInterfaceDetails"
+        const val GET_INTERFACE_DETAILS_FOR_KEY = "GetInterfaceDetailsCAS"
         const val LOC_DATA_GET_IPAD = "LocDataGetIpad"
         const val LOC_DATA_GET_IPAD_KEY = "LocDataGetIpadCAS"
         const val GET_EXT_LOC_INFO = "GetExtLocInfo"

@@ -20,12 +20,14 @@ import com.cas.casdashboard.databinding.FragmentLoginBinding
 import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
 import com.cas.casdashboard.https.response.decode.LoginResultItem
 import com.cas.casdashboard.https.util.IStateObserver
+import com.cas.casdashboard.model.room.entity.CompanyAllEntity
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
 import com.cas.casdashboard.util.Constants.isLoginView
 import com.cas.casdashboard.util.bindView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -37,7 +39,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private lateinit var mUsername: String
     private lateinit var mPassword: String
     private val loginViewModel by viewModels<LoginFrgViewModel>()
-    private val companyListRvAdapter = LoginEditTextRvAdapter { companyAllEntity ->
+    private val companyListRvAdapter = LoginEditTextRvAdapter { companyAllEntity:CompanyAllEntity ->
         binding.loginBox.companyNameSearch.setText(companyAllEntity.companyAllName)
         binding.loginBox.companyListRv.isVisible = false
         Constants.companyName = companyAllEntity.companyAllName
@@ -73,19 +75,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
             })
         if (loginViewModel.getIsRememberCredentialsValue()) {
-            loginViewModel.getAdministrator(companyAllEntity.companyAllName).observe(viewLifecycleOwner) { administrator ->
-                    if (administrator != null) {
-                        binding.loginBox.apply {
-                            companyNameSearch.setText(administrator.companyName)
-                            spinner.setText(administrator.locationName)
-                            username.setText(administrator.username)
-                            password.setText(administrator.password)
-                            locationRecyclerview.isVisible = false
-                            companyListRv.isVisible = false
-                        }
-                        locationId = administrator.locationId
-                    }
+            loginViewModel.getAdministrator(companyAllEntity.companyAllName) {admin ->
+                binding.loginBox.apply {
+                    companyNameSearch.setText(admin.companyName)
+                    spinner.setText(admin.locationName)
+                    username.setText(admin.username)
+                    password.setText(admin.password)
+                    locationRecyclerview.isVisible = false
+                    companyListRv.isVisible = false
                 }
+                locationId = admin.locationId
+            }
         }
     }
     private val locationAdapter = LocationAdapter {
@@ -152,7 +152,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 locationRecyclerview.isVisible = false
             }
         }
-        loginViewModel.loadingObserver.postValue(false)
+        loginViewModel.setLoadingObserver(false)
         loginBox.apply {
             loginViewModel.isRememberCredentials.observe(viewLifecycleOwner) { rememberCredentialsSwitch.isChecked = it }
             loginViewModel.isLockedMode.observe(viewLifecycleOwner) { lockedModeSwitch.isChecked = it }
@@ -181,14 +181,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             loginBtn.apply {
                 icon = null
                 setOnClickListener {
-                    loginViewModel.loadingObserver.postValue(true)
+                    loginViewModel.setLoadingObserver(true)
                     mUsername = username.text.toString()
                     mPassword = password.text.toString()
                     if (locationId.isNotBlank() && mUsername.isNotBlank() && mUsername.isNotBlank()) {
                         loginViewModel.getLogin(locationId, mUsername, mPassword)
                     } else {
                         Snackbar.make(binding.root, "Username or password is null", Snackbar.LENGTH_SHORT).show()
-                        loginViewModel.loadingObserver.postValue(false)
+                        loginViewModel.setLoadingObserver(false)
                     }
                 }
             }
@@ -199,7 +199,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         loginViewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
                 override fun onDataChange(data: List<LoginResultItem>) {
                     Log.e(TAG, "onDataChange: $data")
-                    loginViewModel.loadingObserver.postValue(false)
+                    loginViewModel.setLoadingObserver(false)
                     binding.loginBox.apply {
                         loginViewModel.insertAdministrator(
                             companyNameSearch.text.toString(),
@@ -217,17 +217,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 override fun onDataEmpty() {
                     Log.e(TAG, "onDataEmpty: ")
                     Snackbar.make(binding.root, "No details of the company", Snackbar.LENGTH_SHORT).show()
-                    loginViewModel.loadingObserver.postValue(false)
+                    loginViewModel.setLoadingObserver(false)
                 }
 
                 override fun onFailed(msg: String) {
                     Log.e(TAG, "onFailed: $msg")
-                    loginViewModel.loadingObserver.postValue(false)
+                    loginViewModel.setLoadingObserver(false)
                 }
 
                 override fun onError(error: Throwable) {
                     Log.e(TAG, "onError: $error")
-                    loginViewModel.loadingObserver.postValue(false)
+                    loginViewModel.setLoadingObserver(false)
                 }
 
                 override fun onLoading() {

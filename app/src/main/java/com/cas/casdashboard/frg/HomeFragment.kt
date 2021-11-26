@@ -23,7 +23,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val homeFrgViewModel by viewModels<HomeFrgViewModel>()
-    private val sideBarAdapter = SideBarAdapter {
+    private val sideBarAdapter = SideBarAdapter {loginResultItem ->
+        homeFrgViewModel.getAdministrator(Constants.companyName) {
+            homeFrgViewModel.getInterfaceDetails(loginResultItem.id,it.username,it.password)
+        }
         replaceFrg(MonitoringFragment())
     }
     override val binding: FragmentHomeBinding by bindView()

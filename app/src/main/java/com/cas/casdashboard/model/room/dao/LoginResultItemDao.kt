@@ -13,8 +13,6 @@ import kotlinx.coroutines.flow.Flow
  * @description:
  * @date :2021.9.18 16:47
  */
-
-
 @Dao
 interface LoginResultItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

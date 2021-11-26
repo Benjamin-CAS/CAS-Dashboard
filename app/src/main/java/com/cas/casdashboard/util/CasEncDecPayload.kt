@@ -3,10 +3,7 @@ package com.cas.casdashboard.util
 import android.util.Base64
 import android.util.Log
 import com.cas.casdashboard.https.Api
-import com.cas.casdashboard.https.request.RequestGetExtLocInfo
-import com.cas.casdashboard.https.request.GetLogin
-import com.cas.casdashboard.https.request.LocDataGetIpad
-import com.cas.casdashboard.https.request.LocationList
+import com.cas.casdashboard.https.request.*
 import com.google.gson.Gson
 
 /**
@@ -76,6 +73,17 @@ object CasEncDecPayload {
         val key = "${Api.GET_EXT_LOC_INFO_KEY}$timeStamp"
         val payload = Gson().toJson(RequestGetExtLocInfo(companyID,locationId))
         Log.e(TAG, "getExtLocInfoEncryptedEncodedPayload: $payload")
+        val casEncrypted = doCASEncryptOrDecrypt(payload, key)
+        return toBase64Encoding(casEncrypted)
+    }
+    fun getInterfaceDetailsEncryptedEncodedPayload(
+        timeStamp: String,
+        dashBoardId:String,
+        username:String,
+        password:String
+    ): String {
+        val key = "${Api.GET_INTERFACE_DETAILS_FOR_KEY}$timeStamp"
+        val payload = Gson().toJson(RequestGetInterfaceDetails(dashBoardId,username,password))
         val casEncrypted = doCASEncryptOrDecrypt(payload, key)
         return toBase64Encoding(casEncrypted)
     }
