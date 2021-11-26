@@ -2,18 +2,15 @@ package com.cas.casdashboard.frg
 
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.Gravity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cas.casdashboard.R
 import com.cas.casdashboard.adapter.SideBarAdapter
 import com.cas.casdashboard.databinding.FragmentHomeBinding
-import com.cas.casdashboard.dialog.ChartDialog
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
 import com.cas.casdashboard.util.Constants.isLoginView
@@ -23,11 +20,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     private val homeFrgViewModel by viewModels<HomeFrgViewModel>()
-    private val sideBarAdapter = SideBarAdapter {loginResultItem ->
-        homeFrgViewModel.getAdministrator(Constants.companyName) {
-            homeFrgViewModel.getInterfaceDetails(loginResultItem.id,it.username,it.password)
-        }
-        replaceFrg(MonitoringFragment())
+    private val sideBarAdapter = SideBarAdapter { loginResultItem ->
+        replaceFrg(MonitoringFragment(loginResultItem.id))
     }
     override val binding: FragmentHomeBinding by bindView()
     override fun initView() {

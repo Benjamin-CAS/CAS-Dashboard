@@ -106,6 +106,6 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         })
     }
     companion object{
-        const val TAG = "MonitoringFragment"
+        const val TAG = "DashBoardFragment"
     }
 }

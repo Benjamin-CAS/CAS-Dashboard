@@ -15,6 +15,7 @@ object Constants {
     var isLoginView = false
     const val L_TIME_KEY = "ltime"
     const val PAYLOAD_KEY = "pl"
+    var pageId = "0"
     var companyName = ""
     private const val IMG_LOGO_URL = "https://monitor.cleanairspaces.com/assets/images/logo/"
     private const val IMG_BACKGROUND_IMAGE_URL = "https://monitor.cleanairspaces.com/assets/images/picture/"
