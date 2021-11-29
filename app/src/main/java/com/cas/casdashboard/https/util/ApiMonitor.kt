@@ -40,6 +40,7 @@ inline fun <T : BaseJson, reified R> httpRequest(stateLiveData: StateLiveData<R>
     }
 }
 inline fun <reified R> decodePayload(payload:String): R? {
+    Log.e("decodePayload", "decodePayload: ${decodeApiResponse(payload)}")
     val type = object : TypeToken<R>(){}.type
     return Gson().fromJson(decodeApiResponse(payload),type)
 }

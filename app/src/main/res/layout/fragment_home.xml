@@ -75,7 +75,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/air_quality"
+                    android:id="@+id/air_quality_item"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackground"

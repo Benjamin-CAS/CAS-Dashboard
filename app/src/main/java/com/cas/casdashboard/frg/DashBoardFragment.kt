@@ -4,7 +4,6 @@ package com.cas.casdashboard.frg
 import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.cas.casdashboard.R
 import com.cas.casdashboard.databinding.FragmentDashboardBinding
@@ -18,17 +17,16 @@ import com.cas.casdashboard.util.Constants.LOGO
 import com.cas.casdashboard.util.bindView
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragment_dashboard){
-    private val dashBoardFrgViewModel by viewModels<DashBoardFrgViewModel>()
+class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgViewModel>(R.layout.fragment_dashboard){
     private val mk: MMKV = MMKV.defaultMMKV()
     override val binding by bindView<FragmentDashboardBinding>()
+    override val viewModel: DashBoardFrgViewModel by viewModels()
     override fun initView() {
         Constants.isLockedMode.postValue(mk.decodeBool("IS_LOCKED_MODE"))
-        dashBoardFrgViewModel.getAdministrator(Constants.companyName)
-        dashBoardFrgViewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
+        viewModel.getAdministrator(Constants.companyName)
+        viewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
             override fun onDataChange(data: LocGetData) {
                 Log.e(HomeFragment.TAG, "onDataChange: $data")
                 binding.apply {
@@ -90,14 +88,14 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
             }
 
         })
-        dashBoardFrgViewModel.getMonitorLocInfo.observe(viewLifecycleOwner,object : IStateObserver<GetMonitorLocInfo>(){
+        viewModel.getMonitorLocInfo.observe(viewLifecycleOwner,object : IStateObserver<GetMonitorLocInfo>(){
             override fun onDataChange(data: GetMonitorLocInfo) {
                 Log.e(TAG, "onDataChange: $data")
                 binding.apply {
                     backgroundImage.load(data[0].picture.BACKGROUND)
                     companyLogo.load(data[0].logo.LOGO)
                 }
-                dashBoardFrgViewModel.insertGetMonitorLocInfo(data)
+                viewModel.insertGetMonitorLocInfo(data)
             }
             override fun onDataEmpty() {}
             override fun onFailed(msg: String) {}
@@ -108,4 +106,6 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     companion object{
         const val TAG = "DashBoardFragment"
     }
+
+
 }

@@ -32,21 +32,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
+class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.layout.fragment_login) {
     private var locationId: String = ""
     private lateinit var companyId: String
     private lateinit var textAnimation: Animation
     private lateinit var mUsername: String
     private lateinit var mPassword: String
-    private val loginViewModel by viewModels<LoginFrgViewModel>()
     private val companyListRvAdapter = LoginEditTextRvAdapter { companyAllEntity:CompanyAllEntity ->
         binding.loginBox.companyNameSearch.setText(companyAllEntity.companyAllName)
         binding.loginBox.companyListRv.isVisible = false
         Constants.companyName = companyAllEntity.companyAllName
         companyId = companyAllEntity.companyAllId.toString()
         Log.e(TAG, "initView: $companyAllEntity")
-        loginViewModel.getCompanyLocation(companyAllEntity.companyAllId.toString())
-        loginViewModel.getCompanyLocationID.observe(viewLifecycleOwner,
+        viewModel.getCompanyLocation(companyAllEntity.companyAllId.toString())
+        viewModel.getCompanyLocationID.observe(viewLifecycleOwner,
             object : IStateObserver<CompanyLocationDecode>() {
                 override fun onDataChange(data: CompanyLocationDecode) {
                     if (!data.isNullOrEmpty()) {
@@ -74,8 +73,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 }
 
             })
-        if (loginViewModel.getIsRememberCredentialsValue()) {
-            loginViewModel.getAdministrator(companyAllEntity.companyAllName) {admin ->
+        if (viewModel.getIsRememberCredentialsValue()) {
+            viewModel.getAdministrator(companyAllEntity.companyAllName) {admin ->
                 binding.loginBox.apply {
                     companyNameSearch.setText(admin.companyName)
                     spinner.setText(admin.locationName)
@@ -98,16 +97,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
      * 获取ViewBinding
      */
     override val binding: FragmentLoginBinding by bindView()
-
+    override val viewModel: LoginFrgViewModel by viewModels()
     /**
      * 变量初始化
      */
     override fun initView() {
         isLoginView = true
         textAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.text_alpha_anim)
-        loginViewModel.getSearchCompany().observe(viewLifecycleOwner) { companyListRvAdapter.submitList(it) }
-        loginViewModel.postIsRememberCredentialsValue()
-        loginViewModel.postIsLockedModeValue()
+        viewModel.getSearchCompany().observe(viewLifecycleOwner) { companyListRvAdapter.submitList(it) }
+        viewModel.postIsRememberCredentialsValue()
+        viewModel.postIsLockedModeValue()
         loginApiResult()
         viewBindingApply()
         val imageListDraw = listOf(
@@ -135,7 +134,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 delay(10000)
             }
         }
-        loginViewModel.loadingObserver.observe(viewLifecycleOwner){
+        viewModel.loadingObserver.observe(viewLifecycleOwner){
             binding.apply {
                 loginBox.maskLoading.isVisible = it
                 loginBox.loginBtn.isClickable = !it
@@ -152,10 +151,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                 locationRecyclerview.isVisible = false
             }
         }
-        loginViewModel.setLoadingObserver(false)
+        viewModel.setLoadingObserver(false)
         loginBox.apply {
-            loginViewModel.isRememberCredentials.observe(viewLifecycleOwner) { rememberCredentialsSwitch.isChecked = it }
-            loginViewModel.isLockedMode.observe(viewLifecycleOwner) { lockedModeSwitch.isChecked = it }
+            viewModel.isRememberCredentials.observe(viewLifecycleOwner) { rememberCredentialsSwitch.isChecked = it }
+            viewModel.isLockedMode.observe(viewLifecycleOwner) { lockedModeSwitch.isChecked = it }
             companyListRv.apply {
                 layoutManager = GridLayoutManager(requireContext(), 1)
                 adapter = companyListRvAdapter
@@ -167,28 +166,28 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             companyNameSearch.doAfterTextChanged { editText ->
                 if (editText.toString().isBlank()) locationRecyclerview.isVisible = false
                 binding.loginBox.companyListRv.isVisible = editText.toString().isNotBlank()
-                loginViewModel.searchCompany(editText.toString())
+                viewModel.searchCompany(editText.toString())
             }
             spinner.doAfterTextChanged { editText ->
                 if (editText.toString().isBlank()) locationRecyclerview.isVisible = false
             }
             rememberCredentialsSwitch.setOnCheckedChangeListener { button, isCheck ->
-                loginViewModel.encodeIsRememberCredentialsValue(isCheck)
+                viewModel.encodeIsRememberCredentialsValue(isCheck)
             }
             lockedModeSwitch.setOnCheckedChangeListener { button, isCheck ->
-                loginViewModel.encodeIsLockedModeValue(isCheck)
+                viewModel.encodeIsLockedModeValue(isCheck)
             }
             loginBtn.apply {
                 icon = null
                 setOnClickListener {
-                    loginViewModel.setLoadingObserver(true)
+                    viewModel.setLoadingObserver(true)
                     mUsername = username.text.toString()
                     mPassword = password.text.toString()
                     if (locationId.isNotBlank() && mUsername.isNotBlank() && mUsername.isNotBlank()) {
-                        loginViewModel.getLogin(locationId, mUsername, mPassword)
+                        viewModel.getLogin(locationId, mUsername, mPassword)
                     } else {
                         Snackbar.make(binding.root, "Username or password is null", Snackbar.LENGTH_SHORT).show()
-                        loginViewModel.setLoadingObserver(false)
+                        viewModel.setLoadingObserver(false)
                     }
                 }
             }
@@ -196,12 +195,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun loginApiResult() {
-        loginViewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
+        viewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
                 override fun onDataChange(data: List<LoginResultItem>) {
                     Log.e(TAG, "onDataChange: $data")
-                    loginViewModel.setLoadingObserver(false)
+                    viewModel.setLoadingObserver(false)
                     binding.loginBox.apply {
-                        loginViewModel.insertAdministrator(
+                        viewModel.insertAdministrator(
                             companyNameSearch.text.toString(),
                             companyId,
                             spinner.text.toString(),
@@ -210,24 +209,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             mPassword
                         )
                     }
-                    loginViewModel.insertLoginResultItem(data)
+                    viewModel.insertLoginResultItem(data)
                     findNavController().navigate(R.id.homeFragment)
                 }
 
                 override fun onDataEmpty() {
                     Log.e(TAG, "onDataEmpty: ")
                     Snackbar.make(binding.root, "No details of the company", Snackbar.LENGTH_SHORT).show()
-                    loginViewModel.setLoadingObserver(false)
+                    viewModel.setLoadingObserver(false)
                 }
 
                 override fun onFailed(msg: String) {
                     Log.e(TAG, "onFailed: $msg")
-                    loginViewModel.setLoadingObserver(false)
+                    viewModel.setLoadingObserver(false)
                 }
 
                 override fun onError(error: Throwable) {
                     Log.e(TAG, "onError: $error")
-                    loginViewModel.setLoadingObserver(false)
+                    viewModel.setLoadingObserver(false)
                 }
 
                 override fun onLoading() {
@@ -240,4 +239,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     companion object {
         private const val TAG = "LoginFragment"
     }
+
+
 }

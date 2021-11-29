@@ -47,8 +47,12 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
              httpRepo.insertAdministrator(Administrator(companyNameSearch,companyId,spinner,locationId,username,password))
          }
     fun getAdministrator(query: String,success:(Administrator) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-        val admin = httpRepo.getAdministrator(query)
-        withContext(Dispatchers.Main){ success(admin) }
+        val admin:Administrator ?= httpRepo.getAdministrator(query)
+        withContext(Dispatchers.Main){
+            if (admin != null) {
+                success(admin)
+            }
+        }
     }
 
     fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = viewModelScope.launch(Dispatchers.IO) {

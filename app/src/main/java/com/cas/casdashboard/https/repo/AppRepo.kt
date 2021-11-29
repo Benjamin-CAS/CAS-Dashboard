@@ -3,10 +3,7 @@ package com.cas.casdashboard.https.repo
 import android.util.Log
 import androidx.lifecycle.asLiveData
 import com.cas.casdashboard.https.Api
-import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
-import com.cas.casdashboard.https.response.decode.GetMonitorLocInfo
-import com.cas.casdashboard.https.response.decode.LocGetData
-import com.cas.casdashboard.https.response.decode.LoginResultItem
+import com.cas.casdashboard.https.response.decode.*
 import com.cas.casdashboard.https.util.StateLiveData
 import com.cas.casdashboard.https.util.httpRequest
 import com.cas.casdashboard.model.room.dao.AdministratorDao
@@ -135,7 +132,8 @@ class AppRepo @Inject constructor(
     suspend fun getInterfaceDetails(
         dashBoardId:String,
         username:String,
-        password:String
+        password:String,
+        stateLiveData: StateLiveData<InterfaceDetails>
     ){
         val timeStamp = System.currentTimeMillis().toString()
         val getInterfaceDetails = getInterfaceDetailsEncryptedEncodedPayload(timeStamp,dashBoardId,username,password)
@@ -143,8 +141,9 @@ class AppRepo @Inject constructor(
             addProperty(L_TIME_KEY, timeStamp)
             addProperty(PAYLOAD_KEY, getInterfaceDetails)
         }
-        Log.e(TAG, "getInterfaceDetails: $requestInterfaceDetails")
-        Log.e(TAG, "getInterfaceDetails: #${decodeApiResponse(api.getInterfaceDetails(pl = requestInterfaceDetails).payload)}")
+        httpRequest(stateLiveData){
+            api.getInterfaceDetails(pl = requestInterfaceDetails)
+        }
     }
     companion object {
         const val TAG = "HttpsRepo"

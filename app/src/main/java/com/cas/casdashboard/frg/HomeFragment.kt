@@ -18,8 +18,8 @@ import com.cas.casdashboard.util.bindView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
-    private val homeFrgViewModel by viewModels<HomeFrgViewModel>()
+class HomeFragment : BaseFragment<FragmentHomeBinding,HomeFrgViewModel>(R.layout.fragment_home) {
+    override val viewModel: HomeFrgViewModel by viewModels()
     private val sideBarAdapter = SideBarAdapter { loginResultItem ->
         replaceFrg(MonitoringFragment(loginResultItem.id))
     }
@@ -27,7 +27,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun initView() {
         isLoginView = false
         viewBindingApply()
-        homeFrgViewModel.getLoginResultItem().observe(viewLifecycleOwner){
+        viewModel.getLoginResultItem().observe(viewLifecycleOwner){
             sideBarAdapter.apply {
                 submitList(it)
             }
@@ -43,7 +43,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             layoutManager = GridLayoutManager(requireContext(),1)
             adapter = sideBarAdapter
         }
-        airQuality.setOnClickListener {
+        airQualityItem.setOnClickListener {
             findNavController().navigate(R.id.homeFragment)
         }
         Constants.isLockedMode.observe(viewLifecycleOwner){
@@ -55,4 +55,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         const val TAG = "HomeFragment"
 
     }
+
+
 }

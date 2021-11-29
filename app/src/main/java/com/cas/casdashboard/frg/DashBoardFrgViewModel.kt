@@ -48,8 +48,10 @@ class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): 
     }
     fun getAdministrator(query: String) = viewModelScope.launch(Dispatchers.IO) {
         val admin = httpRepo.getAdministrator(query)
-        getLocDataGetIpad(admin.companyId,admin.locationId,admin.username,admin.password)
-        getMonitorLocInfo(admin.companyId,admin.locationId)
+        if (admin != null) {
+            getLocDataGetIpad(admin.companyId,admin.locationId,admin.username,admin.password)
+            getMonitorLocInfo(admin.companyId,admin.locationId)
+        }
     }
     fun insertGetMonitorLocInfo(getMonitorLocInfo: GetMonitorLocInfo) = viewModelScope.launch(Dispatchers.IO) {
         val monitorLocInfo = getMonitorLocInfo[0]
