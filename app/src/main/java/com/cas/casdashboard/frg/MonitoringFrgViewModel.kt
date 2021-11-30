@@ -20,6 +20,8 @@ class MonitoringFrgViewModel @Inject constructor(private val httpRepo: AppRepo):
     private val _isHideProgress = MutableLiveData<Boolean>()
     val isHideProgress:LiveData<Boolean> get() = _isHideProgress
     val monitoringDeviceData = StateLiveData<InterfaceDetails>()
+    private val _isHideSelectRv = MutableLiveData<Boolean>()
+    val isHideSelectRv:LiveData<Boolean> get() = _isHideSelectRv
     fun getAdministrator(query:String,pageId:String) = viewModelScope.launch {
         val admin = httpRepo.getAdministrator(query)
         if (admin != null) {
@@ -34,5 +36,6 @@ class MonitoringFrgViewModel @Inject constructor(private val httpRepo: AppRepo):
         httpRepo.getInterfaceDetails(dashBoardId,username,password,monitoringDeviceData)
     }
     fun postValueToIsHideProgress(value:Boolean) = _isHideProgress.postValue(value)
+    fun postValueToIsHideSelectRv(value:Boolean) = _isHideSelectRv.postValue(value)
     fun getMonitorLocInfo() = httpRepo.getMonitorLocInfo()
 }

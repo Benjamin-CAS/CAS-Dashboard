@@ -6,8 +6,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.cas.casdashboard.R
 import com.cas.casdashboard.adapter.MonitoringDevicesAdapter
+import com.cas.casdashboard.adapter.SelectZoneAdapter
 import com.cas.casdashboard.databinding.FragmentMonitoringBinding
+import com.cas.casdashboard.https.response.decode.DeviceDetail
+import com.cas.casdashboard.https.response.decode.Devices
 import com.cas.casdashboard.https.response.decode.InterfaceDetails
+import com.cas.casdashboard.https.response.decode.Zone
 import com.cas.casdashboard.https.util.IStateObserver
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
@@ -24,14 +28,31 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
     private val devicesAdapter = MonitoringDevicesAdapter {
 
     }
+    private val selectZoneAdapter = SelectZoneAdapter {
+        viewModel.postValueToIsHideSelectRv(false)
+    }
     override val binding: FragmentMonitoringBinding by bindView()
     override val viewModel: MonitoringFrgViewModel by viewModels()
     override fun initView() {
+        viewBindingApply()
+        requestViewModelApi()
+        viewModelValueObserve()
         viewModel.postValueToIsHideProgress(true)
-        binding.devicesRv.apply {
+    }
+    private fun viewBindingApply() = with(binding){
+        devicesRv.apply {
             layoutManager = GridLayoutManager(requireContext(),1)
             adapter = devicesAdapter
         }
+        selectZoneRv.apply {
+            layoutManager = GridLayoutManager(requireContext(),1)
+            adapter = selectZoneAdapter
+        }
+        selectZoneRv.setOnClickListener {
+            viewModel.postValueToIsHideSelectRv(true)
+        }
+    }
+    private fun requestViewModelApi(){
         viewModel.getAdministrator(Constants.companyName,pageId)
         viewModel.monitoringDeviceData.observe(viewLifecycleOwner,object :IStateObserver<InterfaceDetails>(){
             override fun onLoading() {}
@@ -44,7 +65,8 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
                     monitoringTempText.text = data.avgAqi.temperature.toString()
                     monitoringHumidityText.text = data.avgAqi.humidity.toString()
                 }
-                devicesAdapter.submitList(data.zones[0].devices.deviceDetails)
+                devicesAdapter.submitList(submitDevices(data))
+                selectZoneAdapter.submitList(data.zones)
                 viewModel.postValueToIsHideProgress(false)
             }
 
@@ -61,6 +83,8 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
             }
 
         })
+    }
+    private fun viewModelValueObserve(){
         viewModel.isHideProgress.observe(viewLifecycleOwner){
             binding.apply {
                 rvProgress.isVisible = it
@@ -73,6 +97,22 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
                 monitoringHumidityText.isVisible = !it
             }
         }
+        viewModel.isHideSelectRv.observe(viewLifecycleOwner){
+            binding.selectZoneRv.isVisible = it
+        }
+    }
+    private fun submitDevices(value:InterfaceDetails): ArrayList<DeviceDetail> {
+        val deviceDetail = ArrayList<List<DeviceDetail>>()
+        for (item in value.zones){
+            deviceDetail.add(item.devices.deviceDetails)
+        }
+        val device = ArrayList<DeviceDetail>()
+        for (item in deviceDetail){
+            for (items in item){
+                device.add(items)
+            }
+        }
+        return device
     }
     companion object {
         const val TAG = "MonitoringFragment"
