@@ -15,7 +15,33 @@ class ExampleUnitTest {
     @Test
     fun main() {
         test()
+        val a = A()
+        val aList = ArrayList<List<D>>()
+        for (item in a.a){
+            aList.add(item.c.d)
+        }
+        val d = ArrayList<D>()
+        for (item in aList){
+            for (items in item){
+                d.add(items)
+            }
+        }
+        println("========")
+        println(d)
+        println("========")
     }
+    data class A(
+        val a:List<B> = listOf(B(C(listOf(D("1")))))
+    )
+    data class B(
+        val c:C = C(listOf(D("12")))
+    )
+    data class C(
+        val d:List<D> = listOf(D("121212"))
+    )
+    data class D(
+        val e:String = "123232"
+    )
     private fun test() = runBlocking {
         launch {
             async {

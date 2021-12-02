@@ -51,17 +51,14 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/select_zone_edit_text"
+                <TextView
+                    android:id="@+id/select_zone_text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:ems="10"
-                    android:inputType="textPersonName"
-                    android:paddingStart="14dp"
-                    android:paddingTop="10dp"
-                    android:paddingEnd="14dp"
-                    android:paddingBottom="10dp" />
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:textSize="34sp" />
             </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -515,7 +512,8 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/guideline24"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline40"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -526,7 +524,8 @@
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/guideline25"
+                        app:layout_constraintEnd_toStartOf="@+id/textView20"
+                        app:layout_constraintStart_toStartOf="@+id/guideline40"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -592,11 +591,11 @@
                         app:layout_constraintGuide_percent="0.72" />
 
                     <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline24"
+                        android:id="@+id/guideline40"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.06" />
+                        app:layout_constraintGuide_percent="0.13" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline25"
@@ -610,35 +609,35 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.28" />
+                        app:layout_constraintGuide_percent="0.37" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline27"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.36" />
+                        app:layout_constraintGuide_percent="0.43" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline28"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.45" />
+                        app:layout_constraintGuide_percent="0.48" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline29"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.54" />
+                        app:layout_constraintGuide_percent="0.55" />
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guideline30"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.62" />
+                        app:layout_constraintGuide_percent="0.61" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
@@ -734,7 +733,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="Total Device"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -750,6 +750,7 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/total_device_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="6"
@@ -778,7 +779,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="Issues"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -794,6 +796,7 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/issues_device_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="6"
@@ -822,7 +825,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="Decvice Availability"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -838,6 +842,7 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/device_availability_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="6"
@@ -866,7 +871,8 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="Energy Consumption"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textSize="24sp" />
 
                             <View
                                 android:layout_width="match_parent"
@@ -882,6 +888,7 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/energy_consumption_num"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="6"
@@ -901,11 +908,18 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/select_zone_rv"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/select_zone_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

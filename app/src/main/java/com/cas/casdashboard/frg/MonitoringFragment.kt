@@ -4,14 +4,12 @@ import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import coil.load
 import com.cas.casdashboard.R
 import com.cas.casdashboard.adapter.MonitoringDevicesAdapter
 import com.cas.casdashboard.adapter.SelectZoneAdapter
 import com.cas.casdashboard.databinding.FragmentMonitoringBinding
-import com.cas.casdashboard.https.response.decode.DeviceDetail
-import com.cas.casdashboard.https.response.decode.Devices
 import com.cas.casdashboard.https.response.decode.InterfaceDetails
-import com.cas.casdashboard.https.response.decode.Zone
 import com.cas.casdashboard.https.util.IStateObserver
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
@@ -25,21 +23,34 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonitoringBinding,MonitoringFrgViewModel>(R.layout.fragment_monitoring) {
-    private val devicesAdapter = MonitoringDevicesAdapter {
-
-    }
-    private val selectZoneAdapter = SelectZoneAdapter {
-        viewModel.postValueToIsHideSelectRv(false)
-    }
     override val binding: FragmentMonitoringBinding by bindView()
     override val viewModel: MonitoringFrgViewModel by viewModels()
+    private lateinit var devicesList:InterfaceDetails
     override fun initView() {
         viewBindingApply()
         requestViewModelApi()
         viewModelValueObserve()
         viewModel.postValueToIsHideProgress(true)
+        viewModel.postValueToIsHideSelectRv(false)
+    }
+    private val selectZoneAdapter = SelectZoneAdapter { zone, _ ->
+        viewModel.postValueToIsHideSelectRv(false)
+        binding.selectZoneText.text = zone.nameEn
+        if (zone.nameEn == "All") {
+            val devices = devicesList.getAllDevices()
+            devicesAdapter.submitList(devices)
+            binding.totalDeviceNum.text = devices.size.toString()
+        } else {
+            devicesAdapter.submitList(zone.devices?.deviceDetails)
+        }
+    }
+    private val devicesAdapter = MonitoringDevicesAdapter {
+
     }
     private fun viewBindingApply() = with(binding){
+        root.setOnClickListener {
+            viewModel.postValueToIsHideSelectRv(false)
+        }
         devicesRv.apply {
             layoutManager = GridLayoutManager(requireContext(),1)
             adapter = devicesAdapter
@@ -51,6 +62,11 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
         selectZoneRv.setOnClickListener {
             viewModel.postValueToIsHideSelectRv(true)
         }
+        selectZoneText.setOnClickListener {
+            viewModel.postValueToIsHideSelectRv(true)
+        }
+        if (Constants.companyLogo.isNotBlank())
+            binding.monitoringLogo.load(Constants.companyLogo)
     }
     private fun requestViewModelApi(){
         viewModel.getAdministrator(Constants.companyName,pageId)
@@ -59,14 +75,19 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
             override fun onDataChange(data: InterfaceDetails) {
                 Log.e(TAG, "onDataChange: $data")
                 binding.apply {
-                    monitoringPmText.text = data.avgAqi.pm.toString()
-                    monitoringCo2Text.text = data.avgAqi.co2.toString()
+                    monitoringPmText.text = data.avgAqi.pm
+                    monitoringCo2Text.text = data.avgAqi.co2
                     monitoringTvocText.text = data.avgAqi.voc
-                    monitoringTempText.text = data.avgAqi.temperature.toString()
-                    monitoringHumidityText.text = data.avgAqi.humidity.toString()
+                    monitoringTempText.text = data.avgAqi.temperature
+                    monitoringHumidityText.text = data.avgAqi.humidity
+                    issuesDeviceNum.text = data.getFaultDevicesNum().size.toString()
+                    deviceAvailabilityNum.text = data.getAllNormalDevicesNum().toString().plus("％")
+                    energyConsumptionNum.text = data.getAllOnDevicesNum().size.toString().plus("％")
                 }
-                devicesAdapter.submitList(submitDevices(data))
-                selectZoneAdapter.submitList(data.zones)
+                selectZoneAdapter.submitList(data.getAllZones()){
+                    devicesList = data
+                    selectZoneAdapter.setPosition()
+                }
                 viewModel.postValueToIsHideProgress(false)
             }
 
@@ -100,19 +121,6 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
         viewModel.isHideSelectRv.observe(viewLifecycleOwner){
             binding.selectZoneRv.isVisible = it
         }
-    }
-    private fun submitDevices(value:InterfaceDetails): ArrayList<DeviceDetail> {
-        val deviceDetail = ArrayList<List<DeviceDetail>>()
-        for (item in value.zones){
-            deviceDetail.add(item.devices.deviceDetails)
-        }
-        val device = ArrayList<DeviceDetail>()
-        for (item in deviceDetail){
-            for (items in item){
-                device.add(items)
-            }
-        }
-        return device
     }
     companion object {
         const val TAG = "MonitoringFragment"

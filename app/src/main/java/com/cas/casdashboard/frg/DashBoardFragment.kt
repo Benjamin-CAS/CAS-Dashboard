@@ -94,6 +94,7 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
                 binding.apply {
                     backgroundImage.load(data[0].picture.BACKGROUND)
                     companyLogo.load(data[0].logo.LOGO)
+                    Constants.companyLogo = data[0].logo.LOGO
                 }
                 viewModel.insertGetMonitorLocInfo(data)
             }

@@ -24,7 +24,7 @@ import javax.inject.Inject
 class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
     val locDataGetIpad = StateLiveData<LocGetData>()
     val getMonitorLocInfo = StateLiveData<GetMonitorLocInfo>()
-    fun getLocDataGetIpad(
+    private fun getLocDataGetIpad(
         companyID: String,
         locationId: String,
         user:String,
@@ -36,7 +36,7 @@ class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): 
             e.printStackTrace()
         }
     }
-    fun getMonitorLocInfo(
+    private fun getMonitorLocInfo(
         companyID: String,
         locationId: String,
     ) = viewModelScope.launch(Dispatchers.IO) {

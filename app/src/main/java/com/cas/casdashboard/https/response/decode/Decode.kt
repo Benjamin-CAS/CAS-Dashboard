@@ -1,7 +1,11 @@
 package com.cas.casdashboard.https.response.decode
 
+import android.graphics.Color
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.cas.casdashboard.R
 import com.google.gson.annotations.SerializedName
 
 
@@ -66,28 +70,82 @@ data class InterfaceDetails(
     val energy: Int,
     @SerializedName("zones")
     val zones: List<Zone>
-)
+){
+    fun getAllDevices(): ArrayList<DeviceDetail> {
+        val deviceDetail = ArrayList<List<DeviceDetail>>()
+        deviceDetail.clear()
+        for (item in zones){
+            item.devices?.deviceDetails?.let { deviceDetail.add(it) }
+        }
+        val device = ArrayList<DeviceDetail>()
+        for (item in deviceDetail){
+            for (items in item){
+                device.add(items)
+            }
+        }
+        return device
+    }
+    fun getAllZones():ArrayList<Zone>{
+        val zoneNameList = ArrayList<Zone>()
+        zoneNameList.clear()
+        for (item in zones){
+            zoneNameList.add(item)
+        }
+        zoneNameList.add(0, Zone(nameEn = "All"))
+        return zoneNameList
+    }
+    fun getFaultDevicesNum(): ArrayList<DeviceDetail> {
+        val allDevices = getAllDevices()
+        val getAllFaultDevices = ArrayList<DeviceDetail>()
+        getAllFaultDevices.clear()
+        for (item in allDevices){
+            if (item.status == "Dis" || item.status == "UV Issue"){
+                getAllFaultDevices.add(item)
+            }
+        }
+        return getAllFaultDevices
+    }
+    fun getAllNormalDevicesNum() = getAllDevices().size - getFaultDevicesNum().size
+    fun getAllOnDevicesNum(): ArrayList<DeviceDetail> {
+        val allDevices = getAllDevices()
+        val getAllOnDevices = ArrayList<DeviceDetail>()
+        getAllOnDevices.clear()
+        for (item in allDevices){
+            if (item.status == "ON"){
+                getAllOnDevices.add(item)
+            }
+        }
+        return getAllOnDevices
+    }
+}
 data class AvgAqi(
     @SerializedName("co2")
-    val co2: Int,
+    val co2: String,
     @SerializedName("humidity")
-    val humidity: Int,
+    val humidity: String,
     @SerializedName("pm")
-    val pm: Int,
+    val pm: String,
     @SerializedName("temperature")
-    val temperature: Int,
+    val temperature: String,
     @SerializedName("voc")
     val voc: String
-)
+){
+    fun getCo2TextColor(){
+
+    }
+    enum class TextColor(){
+
+    }
+}
 data class Zone(
     @SerializedName("aqi")
-    val aqi: Aqi,
+    val aqi: Aqi ?= null,
     @SerializedName("devices")
-    val devices: Devices,
+    val devices: Devices ?= null,
     @SerializedName("name_en")
-    val nameEn: String,
+    val nameEn: String ?= null,
     @SerializedName("zone_id")
-    val zoneId: Int
+    val zoneId: Int ?= null
 )
 data class Aqi(
     @SerializedName("co2")
@@ -118,6 +176,8 @@ data class DeviceDetail(
     val hours: String,
     @SerializedName("id")
     val id: Int,
+    @SerializedName("is_issue")
+    val isIssue:String,
     @SerializedName("mac")
     val mac: String,
     @SerializedName("mode")
@@ -126,4 +186,26 @@ data class DeviceDetail(
     val status: String,
     @SerializedName("uv")
     val uv: String
-)
+){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTextWithBackground() = when(status){
+        "ON" -> DeviceStatus.ON
+        "OFF" -> DeviceStatus.OFF
+        "Dis" -> DeviceStatus.DIS
+        "UV Issue" -> DeviceStatus.UV_ISSUE
+        "Med" -> DeviceStatus.ON
+        else -> DeviceStatus.DEFAULT
+    }
+    enum class DeviceStatus(val statusTxt:String, val bgc: Int){
+        @RequiresApi(Build.VERSION_CODES.O)
+        ON("OK - ON",Color.argb(1f,0.2f,0.7f,0.4f)),
+        @RequiresApi(Build.VERSION_CODES.O)
+        OFF("PAUSED",Color.argb(1f,0.18f,0.26f,0.53f)),
+        @RequiresApi(Build.VERSION_CODES.O)
+        DIS("ERROR: COMM", Color.argb(1f,0.9f,0.1f,0.15f)),
+        @RequiresApi(Build.VERSION_CODES.O)
+        UV_ISSUE("WARN: UV",Color.argb(1f,0.9f,0.4f,0.25f)),
+        @RequiresApi(Build.VERSION_CODES.O)
+        DEFAULT("OK - ON",Color.argb(1f,0.2f,0.7f,0.4f))
+    }
+}

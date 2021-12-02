@@ -17,6 +17,7 @@ object Constants {
     const val PAYLOAD_KEY = "pl"
     var pageId = "0"
     var companyName = ""
+    var companyLogo = ""
     private const val IMG_LOGO_URL = "https://monitor.cleanairspaces.com/assets/images/logo/"
     private const val IMG_BACKGROUND_IMAGE_URL = "https://monitor.cleanairspaces.com/assets/images/picture/"
     val isLockedMode = MutableLiveData(true)
