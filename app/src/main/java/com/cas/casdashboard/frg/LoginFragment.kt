@@ -65,7 +65,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
                 }
 
                 override fun onError(error: Throwable) {
-                    requireActivity().getExternalFilesDir(null)
+
                 }
 
                 override fun onLoading() {
@@ -109,40 +109,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
         viewModel.postIsLockedModeValue()
         loginApiResult()
         viewBindingApply()
-        val imageListDraw = listOf(
-            ContextCompat.getDrawable(requireContext(), R.drawable.one),
-            ContextCompat.getDrawable(requireContext(), R.drawable.two),
-            ContextCompat.getDrawable(requireContext(), R.drawable.three),
-            ContextCompat.getDrawable(requireContext(), R.drawable.four),
-            ContextCompat.getDrawable(requireContext(), R.drawable.five),
-            ContextCompat.getDrawable(requireContext(), R.drawable.six),
-            ContextCompat.getDrawable(requireContext(), R.drawable.seven),
-            ContextCompat.getDrawable(requireContext(), R.drawable.eight),
-            ContextCompat.getDrawable(requireContext(), R.drawable.nine),
-            ContextCompat.getDrawable(requireContext(), R.drawable.ten),
-            ContextCompat.getDrawable(requireContext(), R.drawable.eleven),
-            ContextCompat.getDrawable(requireContext(), R.drawable.twelve),
-            ContextCompat.getDrawable(requireContext(), R.drawable.thirteen),
-            ContextCompat.getDrawable(requireContext(), R.drawable.fourteen),
-            ContextCompat.getDrawable(requireContext(), R.drawable.fifteen),
-        )
-        lifecycleScope.launch {
-            while (isLoginView) {
-                binding.imageView.load(imageListDraw.random()) {
-                    crossfade(true)
-                }
-                delay(10000)
-            }
-        }
-        viewModel.loadingObserver.observe(viewLifecycleOwner){
-            binding.apply {
-                loginBox.maskLoading.isVisible = it
-                loginBox.loginBtn.isClickable = !it
-                loadingText.isVisible = it
-                loginBox.progressBar.isVisible = it
-                if (it)loadingText.startAnimation(textAnimation) else loadingText.clearAnimation()
-            }
-        }
+        loadingBgi()
     }
     private fun viewBindingApply() = with(binding) {
         root.setOnClickListener {
@@ -180,10 +147,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
             loginBtn.apply {
                 icon = null
                 setOnClickListener {
+                    viewModel.deleteAllLoginResultItem()
                     viewModel.setLoadingObserver(true)
                     mUsername = username.text.toString()
                     mPassword = password.text.toString()
                     if (locationId.isNotBlank() && mUsername.isNotBlank() && mUsername.isNotBlank()) {
+                        Log.e(TAG, "---viewBindingApply: $locationId $mUsername $mPassword")
                         viewModel.getLogin(locationId, mUsername, mPassword)
                     } else {
                         Snackbar.make(binding.root, "Username or password is null", Snackbar.LENGTH_SHORT).show()
@@ -195,9 +164,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
     }
 
     private fun loginApiResult() {
+        viewModel.loadingObserver.observe(viewLifecycleOwner){
+            binding.apply {
+                loginBox.maskLoading.isVisible = it
+                loginBox.loginBtn.isClickable = !it
+                loadingText.isVisible = it
+                loginBox.progressBar.isVisible = it
+                if (it)loadingText.startAnimation(textAnimation) else loadingText.clearAnimation()
+            }
+        }
         viewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
                 override fun onDataChange(data: List<LoginResultItem>) {
-                    Log.e(TAG, "onDataChange: $data")
+                    Log.e(TAG, "onDataChange---: $data")
                     viewModel.setLoadingObserver(false)
                     binding.loginBox.apply {
                         viewModel.insertAdministrator(
@@ -235,7 +213,33 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
 
             })
     }
-
+    private fun loadingBgi(){
+        val imageListDraw = listOf(
+            ContextCompat.getDrawable(requireContext(), R.drawable.one),
+            ContextCompat.getDrawable(requireContext(), R.drawable.two),
+            ContextCompat.getDrawable(requireContext(), R.drawable.three),
+            ContextCompat.getDrawable(requireContext(), R.drawable.four),
+            ContextCompat.getDrawable(requireContext(), R.drawable.five),
+            ContextCompat.getDrawable(requireContext(), R.drawable.six),
+            ContextCompat.getDrawable(requireContext(), R.drawable.seven),
+            ContextCompat.getDrawable(requireContext(), R.drawable.eight),
+            ContextCompat.getDrawable(requireContext(), R.drawable.nine),
+            ContextCompat.getDrawable(requireContext(), R.drawable.ten),
+            ContextCompat.getDrawable(requireContext(), R.drawable.eleven),
+            ContextCompat.getDrawable(requireContext(), R.drawable.twelve),
+            ContextCompat.getDrawable(requireContext(), R.drawable.thirteen),
+            ContextCompat.getDrawable(requireContext(), R.drawable.fourteen),
+            ContextCompat.getDrawable(requireContext(), R.drawable.fifteen),
+        )
+        lifecycleScope.launch {
+            while (isLoginView) {
+                binding.imageView.load(imageListDraw.random()) {
+                    crossfade(true)
+                }
+                delay(10000)
+            }
+        }
+    }
     companion object {
         private const val TAG = "LoginFragment"
     }

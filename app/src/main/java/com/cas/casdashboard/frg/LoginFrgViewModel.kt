@@ -58,6 +58,9 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
     fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = viewModelScope.launch(Dispatchers.IO) {
         httpRepo.insertLoginResultItem(loginResultItem)
     }
+    fun deleteAllLoginResultItem() = viewModelScope.launch {
+        httpRepo.deleteAllLoginResultItem()
+    }
     fun getLogin(locationId:String,username:String,password:String) = viewModelScope.launch(Dispatchers.IO) {
         httpRepo.getLogin(locationId,username,password,loginResult)
     }

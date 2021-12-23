@@ -26,6 +26,9 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
     override fun initView() {
         Constants.isLockedMode.postValue(mk.decodeBool("IS_LOCKED_MODE"))
         viewModel.getAdministrator(Constants.companyName)
+        viewModelValueObserve()
+    }
+    private fun viewModelValueObserve(){
         viewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
             override fun onDataChange(data: LocGetData) {
                 Log.e(HomeFragment.TAG, "onDataChange: $data")
@@ -103,10 +106,9 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
             override fun onError(error: Throwable) {}
             override fun onLoading() {}
         })
+
     }
-    companion object{
+    companion object {
         const val TAG = "DashBoardFragment"
     }
-
-
 }

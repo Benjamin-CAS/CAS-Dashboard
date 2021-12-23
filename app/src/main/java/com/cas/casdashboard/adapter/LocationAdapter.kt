@@ -32,7 +32,7 @@ class LocationAdapter(private val itemClick: (CompanyLocationDecodeItem) -> Unit
         }
     ) {
     inner class ViewHolder(view: LocationItemBinding) : RecyclerView.ViewHolder(view.root) {
-        val title = view.companyName
+        private val title = view.companyName
         val root = view.root
         fun bind(companyLocationDecodeItem: CompanyLocationDecodeItem) {
             title.text = companyLocationDecodeItem.name_en

@@ -57,13 +57,13 @@ class AppRepo @Inject constructor(
     fun observeAllCompany() = companyAllEntityDao.getAllCompany().asLiveData()
     fun getSearchCompanyAllName(query: String) = companyAllEntityDao.getSearchCompanyAllName(query)
 
-    suspend fun insertAdministrator(administrator: Administrator) =
-        administratorDao.insertAdministrator(administrator)
+    suspend fun insertAdministrator(administrator: Administrator) = administratorDao.insertAdministrator(administrator)
 
     suspend fun getAdministrator(query: String) = administratorDao.getAdministrator(query)
 
     suspend fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = loginResultItemDao.insertLoginResultItem(loginResultItem)
     fun getLoginResultItem() = loginResultItemDao.getAllLoginResultItem().asLiveData()
+    suspend fun deleteAllLoginResultItem() = loginResultItemDao.deleteAllLoginResultItem()
     suspend fun insertMonitorLocInfo(getMonitorLocInfo: GetMonitorLocInfoItemEntity) = getMonitorLocInfoDao.insertMonitorLocInfo(getMonitorLocInfo)
     fun getMonitorLocInfo() = getMonitorLocInfoDao.getAllMonitorLocInfo().asLiveData()
     suspend fun getCompanyLocation(companyID: String, stateLiveData:StateLiveData<CompanyLocationDecode>){

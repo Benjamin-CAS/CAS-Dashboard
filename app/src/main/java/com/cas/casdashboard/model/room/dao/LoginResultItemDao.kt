@@ -19,4 +19,7 @@ interface LoginResultItemDao {
     suspend fun insertLoginResultItem(loginResultItem: List<LoginResultItem>)
     @Query("SELECT * FROM LOGIN_RESULT_ITEM ORDER BY lastUpdated DESC")
     fun getAllLoginResultItem():Flow<List<LoginResultItem>>
+    @Query("DELETE FROM LOGIN_RESULT_ITEM")
+    suspend fun deleteAllLoginResultItem()
+
 }
