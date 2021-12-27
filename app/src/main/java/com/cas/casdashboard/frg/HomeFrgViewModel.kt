@@ -12,7 +12,7 @@ import javax.inject.Inject
  * @date :2021.11.11 11:04
  */
 @HiltViewModel
-class HomeFrgViewModel  @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
+class HomeFrgViewModel  @Inject constructor(private val appRepo: AppRepo): ViewModel() {
     private val mk: MMKV = MMKV.defaultMMKV()
-    fun getLoginResultItem() = httpRepo.getLoginResultItem()
+    fun getLoginResultItem() = appRepo.getLoginResultItem()
 }

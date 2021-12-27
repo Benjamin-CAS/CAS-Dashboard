@@ -1,18 +1,16 @@
 package com.cas.casdashboard.frg
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.cas.casdashboard.https.repo.ApiRepo
 import com.cas.casdashboard.https.repo.AppRepo
 import com.cas.casdashboard.https.response.decode.GetMonitorLocInfo
 import com.cas.casdashboard.https.response.decode.LocGetData
 import com.cas.casdashboard.https.util.StateLiveData
-import com.cas.casdashboard.model.room.entity.Administrator
 import com.cas.casdashboard.model.room.entity.GetMonitorLocInfoItemEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -21,7 +19,7 @@ import javax.inject.Inject
  * @date :2021.9.18 17:01
  */
 @HiltViewModel
-class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
+class DashBoardFrgViewModel @Inject constructor(private val appRepo: AppRepo, private val apiRepo: ApiRepo): ViewModel() {
     val locDataGetIpad = StateLiveData<LocGetData>()
     val getMonitorLocInfo = StateLiveData<GetMonitorLocInfo>()
     private fun getLocDataGetIpad(
@@ -31,7 +29,7 @@ class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): 
         password: String
     ) = viewModelScope.launch(Dispatchers.IO) {
         try {
-            httpRepo.locDataGetIpad(companyID, locationId, user, password,locDataGetIpad)
+            apiRepo.locDataGetIpad(companyID, locationId, user, password,locDataGetIpad)
         } catch (e:Exception) {
             e.printStackTrace()
         }
@@ -41,13 +39,13 @@ class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): 
         locationId: String,
     ) = viewModelScope.launch(Dispatchers.IO) {
         try {
-            httpRepo.getExtLocInfo(companyID, locationId,getMonitorLocInfo)
+            apiRepo.getExtLocInfo(companyID, locationId,getMonitorLocInfo)
         }catch (e:Exception){
             e.printStackTrace()
         }
     }
     fun getAdministrator(query: String) = viewModelScope.launch(Dispatchers.IO) {
-        val admin = httpRepo.getAdministrator(query)
+        val admin = appRepo.getAdministrator(query)
         if (admin != null) {
             getLocDataGetIpad(admin.companyId,admin.locationId,admin.username,admin.password)
             getMonitorLocInfo(admin.companyId,admin.locationId)
@@ -55,17 +53,19 @@ class DashBoardFrgViewModel @Inject constructor(private val httpRepo: AppRepo): 
     }
     fun insertGetMonitorLocInfo(getMonitorLocInfo: GetMonitorLocInfo) = viewModelScope.launch(Dispatchers.IO) {
         val monitorLocInfo = getMonitorLocInfo[0]
-        httpRepo.insertMonitorLocInfo(GetMonitorLocInfoItemEntity(
-            co2 = monitorLocInfo.co2,
-            humidity = monitorLocInfo.humidity,
-            lat = monitorLocInfo.lat,
-            locationId = monitorLocInfo.locationId,
-            logo = monitorLocInfo.logo,
-            lon = monitorLocInfo.lon,
-            picture = monitorLocInfo.picture,
-            pm = monitorLocInfo.pm,
-            temperature = monitorLocInfo.temperature,
-            tvoc = monitorLocInfo.tvoc
-        ))
+        appRepo.insertMonitorLocInfo(
+            GetMonitorLocInfoItemEntity(
+                co2 = monitorLocInfo.co2,
+                humidity = monitorLocInfo.humidity,
+                lat = monitorLocInfo.lat,
+                locationId = monitorLocInfo.locationId,
+                logo = monitorLocInfo.logo,
+                lon = monitorLocInfo.lon,
+                picture = monitorLocInfo.picture,
+                pm = monitorLocInfo.pm,
+                temperature = monitorLocInfo.temperature,
+                tvoc = monitorLocInfo.tvoc
+            )
+        )
     }
 }

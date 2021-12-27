@@ -1,6 +1,7 @@
 package com.cas.casdashboard.frg
 
 import androidx.lifecycle.*
+import com.cas.casdashboard.https.repo.ApiRepo
 import com.cas.casdashboard.https.repo.AppRepo
 import com.cas.casdashboard.https.response.decode.CompanyLocationDecode
 import com.cas.casdashboard.https.response.decode.LoginResultItem
@@ -10,14 +11,13 @@ import com.cas.casdashboard.model.room.entity.CompanyAllEntity
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): ViewModel() {
+class LoginFrgViewModel @Inject constructor(private val appRepo: AppRepo, private val apiRepo: ApiRepo): ViewModel() {
     private var searchCompany = MutableLiveData<String>()
     private val _loadingObserver = MutableLiveData<Boolean>()
     val loadingObserver:LiveData<Boolean> get() = _loadingObserver
@@ -28,7 +28,6 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
     val isLockedMode:LiveData<Boolean> get() = _isLockedMode
     val loginResult = StateLiveData<List<LoginResultItem>>()
     val getCompanyLocationID = StateLiveData<CompanyLocationDecode>()
-    fun getAllCompany() = httpRepo.observeAllCompany()
     fun postIsRememberCredentialsValue() = _isRememberCredentials.postValue(mk.decodeBool(IS_REMEMBER_CREDENTIALS))
     fun getIsRememberCredentialsValue() = mk.decodeBool(IS_REMEMBER_CREDENTIALS)
     fun encodeIsRememberCredentialsValue(value:Boolean) = mk.encode(IS_REMEMBER_CREDENTIALS,value)
@@ -37,17 +36,17 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
     fun searchCompany(query: String) = searchCompany.postValue(query)
     fun getSearchCompany() = searchCompany.switchMap {
         if (it.isNullOrBlank()) emptyFlow<List<CompanyAllEntity>>().asLiveData()
-        else httpRepo.getSearchCompanyAllName(it).asLiveData()
+        else appRepo.getSearchCompanyAllName(it).asLiveData()
     }
     fun getCompanyLocation(companyId:String) = viewModelScope.launch(Dispatchers.IO) {
-        httpRepo.getCompanyLocation(companyId,getCompanyLocationID)
+        apiRepo.getCompanyLocation(companyId,getCompanyLocationID)
     }
     fun insertAdministrator(companyNameSearch:String,companyId:String,spinner:String,locationId:String,username: String,password: String) =
          viewModelScope.launch(Dispatchers.IO) {
-             httpRepo.insertAdministrator(Administrator(companyNameSearch,companyId,spinner,locationId,username,password))
+             appRepo.insertAdministrator(Administrator(companyNameSearch,companyId,spinner,locationId,username,password))
          }
     fun getAdministrator(query: String,success:(Administrator) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-        val admin:Administrator ?= httpRepo.getAdministrator(query)
+        val admin:Administrator ?= appRepo.getAdministrator(query)
         withContext(Dispatchers.Main){
             if (admin != null) {
                 success(admin)
@@ -56,13 +55,13 @@ class LoginFrgViewModel @Inject constructor(private val httpRepo: AppRepo): View
     }
 
     fun insertLoginResultItem(loginResultItem: List<LoginResultItem>) = viewModelScope.launch(Dispatchers.IO) {
-        httpRepo.insertLoginResultItem(loginResultItem)
+        appRepo.insertLoginResultItem(loginResultItem)
     }
     fun deleteAllLoginResultItem() = viewModelScope.launch {
-        httpRepo.deleteAllLoginResultItem()
+        appRepo.deleteAllLoginResultItem()
     }
     fun getLogin(locationId:String,username:String,password:String) = viewModelScope.launch(Dispatchers.IO) {
-        httpRepo.getLogin(locationId,username,password,loginResult)
+        apiRepo.getLogin(locationId,username,password,loginResult)
     }
     fun setLoadingObserver(value:Boolean) = _loadingObserver.postValue(value)
     companion object {
