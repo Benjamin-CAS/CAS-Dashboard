@@ -12,6 +12,7 @@
     <string name="spinner_tip">Location</string>
     <string name="please_loading_text">Loading...</string>
     <string name="air_quality">Air Quality</string>
+    <string name="cms">CMS</string>
     <string name="indoor_text">INDOOR:</string>
     <string name="pm_value_text">PM2.5</string>
     <string name="unit_pm">μg/m3</string>

@@ -15,4 +15,8 @@
         android:name="com.cas.casdashboard.frg.TestFragment"
         android:label="fragment_test"
         tools:layout="@layout/fragment_test" />
+    <fragment
+        android:id="@+id/monitoringFragment"
+        android:name="com.cas.casdashboard.frg.MonitoringFragment"
+        android:label="MonitoringFragment" />
 </navigation>

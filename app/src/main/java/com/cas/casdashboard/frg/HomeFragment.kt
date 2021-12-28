@@ -31,7 +31,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,HomeFrgViewModel>(R.layout
         isLoginView = false
         viewBindingApply()
         viewModel.getLoginResultItem().observe(viewLifecycleOwner){
-            Log.e(TAG, "getLoginResultItem---: $it")
             sideBarAdapter.submitList(it){}
         }
     }
@@ -44,6 +43,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding,HomeFrgViewModel>(R.layout
             adapter = sideBarAdapter
         }
         airQualityItem.setOnClickListener { findNavController().navigate(R.id.homeFragment) }
+        cmsWebview.setOnClickListener {
+            replaceFrg(CMSFragment())
+            drawerLayout.close()
+        }
         Constants.isLockedMode.observe(viewLifecycleOwner) { menuBtn.isClickable = !it }
     }
     private fun replaceFrg(frg:Fragment) =
