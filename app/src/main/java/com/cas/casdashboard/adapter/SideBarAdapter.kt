@@ -35,7 +35,6 @@ class SideBarAdapter(private val itemClick: (LoginResultItem) -> Unit):ListAdapt
         itemClick(getItem(0))
     }
     inner class ViewHolder(binding:SideBarRvItemBinding):RecyclerView.ViewHolder(binding.root){
-        val root = binding.root
         private val sideBarName = binding.sideBarName
         val background = binding.background
         fun bind(loginResultItem: LoginResultItem){

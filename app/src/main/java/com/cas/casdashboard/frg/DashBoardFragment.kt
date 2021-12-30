@@ -1,7 +1,6 @@
 package com.cas.casdashboard.frg
 
 
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import coil.load
@@ -14,6 +13,7 @@ import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
 import com.cas.casdashboard.util.Constants.BACKGROUND
 import com.cas.casdashboard.util.Constants.LOGO
+import com.cas.casdashboard.util.LogUtil
 import com.cas.casdashboard.util.bindView
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +31,7 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
     private fun viewModelValueObserve(){
         viewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
             override fun onDataChange(data: LocGetData) {
-                Log.e(HomeFragment.TAG, "onDataChange: $data")
+                LogUtil.e(TAG, "onDataChange: $data")
                 binding.apply {
                     progressIndoor.isVisible = false
                     progressOutdoor.isVisible = false
@@ -93,7 +93,7 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
         })
         viewModel.getMonitorLocInfo.observe(viewLifecycleOwner,object : IStateObserver<GetMonitorLocInfo>(){
             override fun onDataChange(data: GetMonitorLocInfo) {
-                Log.e(TAG, "onDataChange: $data")
+                LogUtil.e(TAG, "onDataChange: $data")
                 binding.apply {
                     backgroundImage.load(data[0].picture.BACKGROUND)
                     companyLogo.load(data[0].logo.LOGO)

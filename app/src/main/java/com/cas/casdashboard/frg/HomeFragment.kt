@@ -2,7 +2,6 @@ package com.cas.casdashboard.frg
 
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.Gravity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment

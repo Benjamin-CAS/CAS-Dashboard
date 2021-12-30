@@ -1,6 +1,5 @@
 package com.cas.casdashboard.frg
 
-import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,6 +12,7 @@ import com.cas.casdashboard.https.response.decode.InterfaceDetails
 import com.cas.casdashboard.https.util.IStateObserver
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
+import com.cas.casdashboard.util.LogUtil
 import com.cas.casdashboard.util.bindView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,7 +73,7 @@ class MonitoringFragment(private val pageId: String) :BaseFragment<FragmentMonit
         viewModel.monitoringDeviceData.observe(viewLifecycleOwner,object :IStateObserver<InterfaceDetails>(){
             override fun onLoading() {}
             override fun onDataChange(data: InterfaceDetails) {
-                Log.e(TAG, "onDataChange: $data")
+                LogUtil.e(TAG, "onDataChange: $data")
                 binding.apply {
                     monitoringPmText.text = data.avgAqi.pm
                     monitoringCo2Text.text = data.avgAqi.co2

@@ -1,6 +1,9 @@
 package com.cas.casdashboard.frg
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.cas.casdashboard.https.repo.ApiRepo
 import com.cas.casdashboard.https.repo.AppRepo
 import com.cas.casdashboard.https.response.decode.InterfaceDetails

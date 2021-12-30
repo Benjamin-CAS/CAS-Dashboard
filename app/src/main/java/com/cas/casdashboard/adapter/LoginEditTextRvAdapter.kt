@@ -14,7 +14,7 @@ class LoginEditTextRvAdapter(private val itemClick:(CompanyAllEntity) -> Unit): 
         override fun areItemsTheSame(
             oldItem: CompanyAllEntity,
             newItem: CompanyAllEntity
-        ) = oldItem == newItem
+        ) = oldItem === newItem
 
         override fun areContentsTheSame(
             oldItem: CompanyAllEntity,

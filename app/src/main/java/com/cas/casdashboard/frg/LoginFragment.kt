@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,10 +23,10 @@ import com.cas.casdashboard.model.room.entity.CompanyAllEntity
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
 import com.cas.casdashboard.util.Constants.isLoginView
+import com.cas.casdashboard.util.LogUtil
 import com.cas.casdashboard.util.bindView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -43,7 +42,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
         binding.loginBox.companyListRv.isVisible = false
         Constants.companyName = companyAllEntity.companyAllName
         companyId = companyAllEntity.companyAllId.toString()
-        Log.e(TAG, "initView: $companyAllEntity")
+        LogUtil.e(TAG, "$companyAllEntity")
         viewModel.getCompanyLocation(companyAllEntity.companyAllId.toString())
         viewModel.getCompanyLocationID.observe(viewLifecycleOwner,
             object : IStateObserver<CompanyLocationDecode>() {
@@ -138,10 +137,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
             spinner.doAfterTextChanged { editText ->
                 if (editText.toString().isBlank()) locationRecyclerview.isVisible = false
             }
-            rememberCredentialsSwitch.setOnCheckedChangeListener { button, isCheck ->
+            rememberCredentialsSwitch.setOnCheckedChangeListener { _, isCheck ->
                 viewModel.encodeIsRememberCredentialsValue(isCheck)
             }
-            lockedModeSwitch.setOnCheckedChangeListener { button, isCheck ->
+            lockedModeSwitch.setOnCheckedChangeListener { _, isCheck ->
                 viewModel.encodeIsLockedModeValue(isCheck)
             }
             loginBtn.apply {
@@ -175,7 +174,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
         }
         viewModel.loginResult.observe(viewLifecycleOwner, object : IStateObserver<List<LoginResultItem>>() {
                 override fun onDataChange(data: List<LoginResultItem>) {
-                    Log.e(TAG, "onDataChange---: $data")
+                    LogUtil.e(TAG, "onDataChange---: $data")
                     viewModel.setLoadingObserver(false)
                     binding.loginBox.apply {
                         viewModel.insertAdministrator(
@@ -192,18 +191,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding,LoginFrgViewModel>(R.lay
                 }
 
                 override fun onDataEmpty() {
-                    Log.e(TAG, "onDataEmpty: ")
+                    LogUtil.e(TAG, "onDataEmpty: ")
                     Snackbar.make(binding.root, "No details of the company", Snackbar.LENGTH_SHORT).show()
                     viewModel.setLoadingObserver(false)
                 }
 
                 override fun onFailed(msg: String) {
-                    Log.e(TAG, "onFailed: $msg")
+                    LogUtil.e(TAG, "onFailed: $msg")
                     viewModel.setLoadingObserver(false)
                 }
 
                 override fun onError(error: Throwable) {
-                    Log.e(TAG, "onError: $error")
+                    LogUtil.e(TAG, "onError: $error")
                     viewModel.setLoadingObserver(false)
                 }
 

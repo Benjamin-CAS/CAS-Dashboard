@@ -3,15 +3,17 @@ package com.cas.casdashboard.customview
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.cas.casdashboard.R
+import com.cas.casdashboard.util.Constants.formats
 import com.cas.casdashboard.util.Constants.px
 import com.cas.casdashboard.util.Constants.textPx
-import com.cas.casdashboard.util.Constants.formats
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.min
 

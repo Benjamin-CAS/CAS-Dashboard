@@ -17,7 +17,7 @@ import com.cas.casdashboard.https.response.decode.DeviceDetail
  */
 class MonitoringDevicesAdapter(private val itemClick:(DeviceDetail) -> Unit): ListAdapter<DeviceDetail,MonitoringDevicesAdapter.ViewHolder>(
     object :DiffUtil.ItemCallback<DeviceDetail>(){
-        override fun areItemsTheSame(oldItem: DeviceDetail, newItem: DeviceDetail) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: DeviceDetail, newItem: DeviceDetail) = oldItem === newItem
         override fun areContentsTheSame(oldItem: DeviceDetail, newItem: DeviceDetail) = oldItem == newItem
     }
 ) {

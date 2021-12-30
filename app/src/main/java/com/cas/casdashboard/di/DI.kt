@@ -1,16 +1,16 @@
 package com.cas.casdashboard.di
 
 import android.app.Application
-import android.util.Log
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.cas.casdashboard.https.Api
 import com.cas.casdashboard.https.util.ParamsLogInterceptor
-import com.cas.casdashboard.model.room.dao.CompanyAllEntityDao
 import com.cas.casdashboard.model.database.CasDatabase
 import com.cas.casdashboard.model.room.dao.AdministratorDao
+import com.cas.casdashboard.model.room.dao.CompanyAllEntityDao
 import com.cas.casdashboard.model.room.dao.GetMonitorLocInfoDao
 import com.cas.casdashboard.model.room.dao.LoginResultItemDao
+import com.cas.casdashboard.util.LogUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,7 +36,7 @@ object DI {
                     .readTimeout(90, TimeUnit.SECONDS)
                     .addInterceptor(ParamsLogInterceptor())
                     .addInterceptor(HttpLoggingInterceptor{
-                        Log.e(TAG, "provideRetrofit: $it")
+                        LogUtil.e(TAG, "provideRetrofit: $it")
                     }.apply {
                         level = HttpLoggingInterceptor.Level.BODY
                     })

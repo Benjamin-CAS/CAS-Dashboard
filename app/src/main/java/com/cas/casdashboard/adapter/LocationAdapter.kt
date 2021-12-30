@@ -21,7 +21,7 @@ class LocationAdapter(private val itemClick: (CompanyLocationDecodeItem) -> Unit
                 oldItem: CompanyLocationDecodeItem,
                 newItem: CompanyLocationDecodeItem
             ) =
-                oldItem == newItem
+                oldItem === newItem
 
             override fun areContentsTheSame(
                 oldItem: CompanyLocationDecodeItem,
@@ -50,7 +50,6 @@ class LocationAdapter(private val itemClick: (CompanyLocationDecodeItem) -> Unit
             itemClick(getItem(absoluteAdapterPosition))
         }
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
