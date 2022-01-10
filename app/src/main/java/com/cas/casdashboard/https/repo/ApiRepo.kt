@@ -1,6 +1,5 @@
 package com.cas.casdashboard.https.repo
 
-import android.util.Log
 import com.cas.casdashboard.https.Api
 import com.cas.casdashboard.https.response.decode.*
 import com.cas.casdashboard.https.util.StateLiveData
@@ -69,9 +68,80 @@ class ApiRepo @Inject constructor(
             addProperty(Constants.L_TIME_KEY, timeStamp)
             addProperty(Constants.PAYLOAD_KEY, locDataGetIpad)
         }
-        Log.e(AppRepo.TAG, "locDataGetIpad: ${CasEncDecPayload.decodeApiResponse("eyJtb25pdG9yX3NlcnZpY2UiOjAsImluZG9vciI6eyJpbmRvb3JfcG0iOjAsImluZG9vcl9jbzIiOjAsImluZG9vcl92b2MiOjAsImluZG9vcl90ZW1wZXJhdHVyZSI6MCwiaW5kb29yX2h1bWlkaXR5IjowLCJpbmRvb3JfdGltZSI6IjE5NzAtMDEtMDEgMDA6MDA6MDAiLCJwYXJhbV9sYWJlbCI6IlBNIDIuNSIsImRpc3BsYXlfcGFyYW0iOjAsIm5hbWVfZW4iOiIiLCJsb24iOiIiLCJsYXQiOiIifSwib3V0ZG9vciI6eyJvdXRkb29yX3BtIjoxNywib3V0ZG9vcl90aW1lIjoiMjAyMS0xMC0xMiAwNjowMDowMCIsIm91dGRvb3JfZGlzcGxheV9wYXJhbSI6MTcsIm91dGRvb3JfbmFtZV9lbiI6Ik1hZHJpZCIsIm5hbWVfZW4iOiJNYWRyaWQiLCJsb24iOiIiLCJsYXQiOiIifSwiRXhwRmlsdGVyIjowLCJFeHBFcXVpcCI6MCwiZW5lcmd5Ijp7Im1vbnRoIjowLCJtYXgiOjAsImN1cnJlbnRfdXNlZCI6MCwiY3VycmVudF9tYXgiOjB9fQ==")}")
         httpRequest(stateLiveData){
             api.locDataGetIpad(pl = requestLocDataGetIpad)
+        }
+    }
+    suspend fun locDataGetIpadLastMonthHistory(
+        companyID: String,
+        locationId: String,
+        user:String,
+        password: String,
+        stateLiveData: StateLiveData<HistoryLastMonthData>
+    ){
+        val timeStamp = System.currentTimeMillis().toString()
+        val locDataGetIpadHistory = CasEncDecPayload.getLocDataGetIpadHistoryEncryptedEncodedPayload(
+            timeStamp,
+            companyID,
+            locationId,
+            user,
+            password,
+            CasEncDecPayload.DateType.LAST_MONTH
+        )
+        val requestLocDataGetIpadHistory = JsonObject().apply {
+            addProperty(Constants.L_TIME_KEY, timeStamp)
+            addProperty(Constants.PAYLOAD_KEY, locDataGetIpadHistory)
+        }
+        httpRequest(stateLiveData){
+            api.locDataGetIpad(pl = requestLocDataGetIpadHistory)
+        }
+    }
+    suspend fun locDataGetIpadLastWeekHistory(
+        companyID: String,
+        locationId: String,
+        user:String,
+        password: String,
+        stateLiveData: StateLiveData<HistoryLastWeekData>
+    ){
+        val timeStamp = System.currentTimeMillis().toString()
+        val locDataGetIpadHistory = CasEncDecPayload.getLocDataGetIpadHistoryEncryptedEncodedPayload(
+            timeStamp,
+            companyID,
+            locationId,
+            user,
+            password,
+            CasEncDecPayload.DateType.LAST_WEEK
+        )
+        val requestLocDataGetIpadHistory = JsonObject().apply {
+            addProperty(Constants.L_TIME_KEY, timeStamp)
+            addProperty(Constants.PAYLOAD_KEY, locDataGetIpadHistory)
+        }
+        httpRequest(stateLiveData){
+            api.locDataGetIpad(pl = requestLocDataGetIpadHistory)
+        }
+    }
+    suspend fun locDataGetIpadLast72HHistory(
+        companyID: String,
+        locationId: String,
+        user:String,
+        password: String,
+        stateLiveData: StateLiveData<HistoryLast72HData>
+    ){
+        val timeStamp = System.currentTimeMillis().toString()
+        val locDataGetIpadHistory = CasEncDecPayload.getLocDataGetIpadHistoryEncryptedEncodedPayload(
+            timeStamp,
+            companyID,
+            locationId,
+            user,
+            password,
+            CasEncDecPayload.DateType.LAST_THREE_DAY
+        )
+        val requestLocDataGetIpadHistory = JsonObject().apply {
+            addProperty(Constants.L_TIME_KEY, timeStamp)
+            addProperty(Constants.PAYLOAD_KEY, locDataGetIpadHistory)
+        }
+        httpRequest(stateLiveData){
+            api.locDataGetIpad(pl = requestLocDataGetIpadHistory)
         }
     }
     suspend fun getExtLocInfo(

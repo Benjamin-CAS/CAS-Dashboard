@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.cas.casdashboard.R
 import com.google.gson.annotations.SerializedName
 
 
@@ -209,3 +208,90 @@ data class DeviceDetail(
         DEFAULT("OK - ON",Color.argb(1f,0.2f,0.7f,0.4f))
     }
 }
+
+data class HistoryLastMonthData(
+    @SerializedName("indoor")
+    val indoor: HistoryIndoor,
+    @SerializedName("lastMonth")
+    val lastMonth: List<HistoryLastDate>,
+    @SerializedName("monitor_service")
+    val monitorService: Int,
+    @SerializedName("outdoor")
+    val outdoor: HistoryOutdoor
+)
+data class HistoryLastWeekData(
+    @SerializedName("indoor")
+    val indoor: HistoryIndoor,
+    @SerializedName("lastWeek")
+    val lastWeek: List<HistoryLastDate>,
+    @SerializedName("monitor_service")
+    val monitorService: Int,
+    @SerializedName("outdoor")
+    val outdoor: HistoryOutdoor
+)
+data class HistoryLast72HData(
+    @SerializedName("indoor")
+    val indoor: HistoryIndoor,
+    @SerializedName("latest72h")
+    val latest72h: List<HistoryLastDate>,
+    @SerializedName("monitor_service")
+    val monitorService: Int,
+    @SerializedName("outdoor")
+    val outdoor: HistoryOutdoor
+)
+data class HistoryIndoor(
+    @SerializedName("display_param")
+    val displayParam: Int,
+    @SerializedName("indoor_co2")
+    val indoorCo2: Int,
+    @SerializedName("indoor_humidity")
+    val indoorHumidity: Int,
+    @SerializedName("indoor_pm")
+    val indoorPm: Int,
+    @SerializedName("indoor_temperature")
+    val indoorTemperature: Int,
+    @SerializedName("indoor_time")
+    val indoorTime: String,
+    @SerializedName("indoor_voc")
+    val indoorVoc: Int,
+    @SerializedName("lat")
+    val lat: String,
+    @SerializedName("lon")
+    val lon: String,
+    @SerializedName("name_en")
+    val nameEn: String,
+    @SerializedName("param_label")
+    val paramLabel: String
+)
+data class HistoryLastDate(
+    @SerializedName("avg_co2")
+    val avgCo2: Int,
+    @SerializedName("avg_humidity")
+    val avgHumidity: Int,
+    @SerializedName("avg_reading")
+    val avgReading: Int,
+    @SerializedName("avg_temperature")
+    val avgTemperature: Int,
+    @SerializedName("avg_tvoc")
+    val avgTvoc: String,
+    @SerializedName("date_reading")
+    val dateReading: String,
+    @SerializedName("reading_comp")
+    val readingComp: Int
+)
+data class HistoryOutdoor(
+    @SerializedName("lat")
+    val lat: String,
+    @SerializedName("lon")
+    val lon: String,
+    @SerializedName("name_en")
+    val nameEn: String,
+    @SerializedName("outdoor_display_param")
+    val outdoorDisplayParam: Int,
+    @SerializedName("outdoor_name_en")
+    val outdoorNameEn: String,
+    @SerializedName("outdoor_pm")
+    val outdoorPm: Int,
+    @SerializedName("outdoor_time")
+    val outdoorTime: String
+)

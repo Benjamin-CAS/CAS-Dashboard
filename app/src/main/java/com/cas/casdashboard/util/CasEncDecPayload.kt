@@ -65,6 +65,24 @@ object CasEncDecPayload {
         val casEncrypted = doCASEncryptOrDecrypt(payload,key)
         return toBase64Encoding(casEncrypted)
     }
+    fun getLocDataGetIpadHistoryEncryptedEncodedPayload(
+        timeStamp: String,
+        companyID: String,
+        locationId: String,
+        user:String,
+        password: String,
+        dateType: DateType
+    ):String{
+        val key = "${Api.LOC_DATA_GET_IPAD_KEY}$timeStamp"
+        val payload:String = when(dateType){
+            DateType.LAST_THREE_DAY -> Gson().toJson(LocDateGetIpadHistory(c = companyID,l = locationId,user = user,password = password, h = "1"))
+            DateType.LAST_WEEK -> Gson().toJson(LocDateGetIpadHistory(c = companyID,l = locationId,user = user,password = password, w = "1"))
+            else -> Gson().toJson(LocDateGetIpadHistory(c = companyID,l = locationId,user = user,password = password, d = "1"))
+        }
+        Log.e(TAG, "getLocDataGetIpadEncryptedEncodedPayload: $payload")
+        val casEncrypted = doCASEncryptOrDecrypt(payload,key)
+        return toBase64Encoding(casEncrypted)
+    }
     fun getExtLocInfoEncryptedEncodedPayload(
         timeStamp: String,
         companyID: String,
@@ -108,4 +126,9 @@ object CasEncDecPayload {
         return trueKey.substring(0, payload.length)
     }
     private const val TAG = "CasEncDecPayload"
+    enum class DateType{
+        LAST_THREE_DAY,
+        LAST_WEEK,
+        LAST_MONTH
+    }
 }

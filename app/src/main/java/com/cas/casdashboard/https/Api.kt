@@ -38,6 +38,7 @@ interface Api{
         @Query("nonce") nonce:String = NONCE,
         @Body pl:JsonObject
     ): Encode
+
     @POST("/index.php/api/approuter")
     suspend fun getExtLocInfo(
         @Query("app_id") app_id:Int = API_APP_ID,
@@ -52,6 +53,7 @@ interface Api{
         @Query("nonce") nonce:String = NONCE,
         @Body pl:JsonObject
     ):Encode
+
     companion object {
         const val COM_ALL = "ComAll"
         const val LOCATION_INFO_METHOD_FOR_KEY = "GetDevInfoByIdCAS"

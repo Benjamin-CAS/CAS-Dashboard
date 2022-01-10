@@ -21,5 +21,4 @@ interface LoginResultItemDao {
     fun getAllLoginResultItem():Flow<List<LoginResultItem>>
     @Query("DELETE FROM LOGIN_RESULT_ITEM")
     suspend fun deleteAllLoginResultItem()
-
 }

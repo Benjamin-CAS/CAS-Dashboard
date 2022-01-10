@@ -1,13 +1,14 @@
 package com.cas.casdashboard.frg
 
 
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import coil.load
 import com.cas.casdashboard.R
 import com.cas.casdashboard.databinding.FragmentDashboardBinding
-import com.cas.casdashboard.https.response.decode.GetMonitorLocInfo
-import com.cas.casdashboard.https.response.decode.LocGetData
+import com.cas.casdashboard.dialog.ChartDialog
+import com.cas.casdashboard.https.response.decode.*
 import com.cas.casdashboard.https.util.IStateObserver
 import com.cas.casdashboard.util.BaseFragment
 import com.cas.casdashboard.util.Constants
@@ -21,13 +22,23 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgViewModel>(R.layout.fragment_dashboard){
     private val mk: MMKV = MMKV.defaultMMKV()
+    private val chartDialog = ChartDialog()
     override val binding by bindView<FragmentDashboardBinding>()
     override val viewModel: DashBoardFrgViewModel by viewModels()
     override fun initView() {
         Constants.isLockedMode.postValue(mk.decodeBool("IS_LOCKED_MODE"))
         viewModel.getAdministrator(Constants.companyName)
         viewModelValueObserve()
+        viewBindingApply()
     }
+
+    private fun viewBindingApply() {
+        binding.backgroundImage.setOnClickListener {
+            chartDialog.show(childFragmentManager,"dash")
+        }
+
+    }
+
     private fun viewModelValueObserve(){
         viewModel.locDataGetIpad.observe(viewLifecycleOwner,object : IStateObserver<LocGetData>(){
             override fun onDataChange(data: LocGetData) {
@@ -106,7 +117,63 @@ class DashBoardFragment : BaseFragment<FragmentDashboardBinding,DashBoardFrgView
             override fun onError(error: Throwable) {}
             override fun onLoading() {}
         })
+        viewModel.last72h.observe(viewLifecycleOwner,object :IStateObserver<HistoryLast72HData>(){
+            override fun onLoading() {
 
+            }
+
+            override fun onDataChange(data: HistoryLast72HData) {
+                Log.e(TAG, "onDataChangeLast72h: $data")
+            }
+
+            override fun onDataEmpty() {
+            }
+
+            override fun onFailed(msg: String) {
+            }
+
+            override fun onError(error: Throwable) {
+
+            }
+
+        })
+        viewModel.lastWeek.observe(viewLifecycleOwner,object :IStateObserver<HistoryLastWeekData>(){
+            override fun onLoading() {
+
+            }
+
+            override fun onDataChange(data: HistoryLastWeekData) {
+                Log.e(TAG, "onDataChangeLastWeek: $data")
+            }
+
+            override fun onDataEmpty() {
+            }
+
+            override fun onFailed(msg: String) {
+            }
+
+            override fun onError(error: Throwable) {
+            }
+
+        })
+        viewModel.lastMonth.observe(viewLifecycleOwner,object :IStateObserver<HistoryLastMonthData>(){
+            override fun onLoading() {
+            }
+
+            override fun onDataChange(data: HistoryLastMonthData) {
+                Log.e(TAG, "onDataChangeLastMonth: $data")
+            }
+
+            override fun onDataEmpty() {
+            }
+
+            override fun onFailed(msg: String) {
+            }
+
+            override fun onError(error: Throwable) {
+            }
+
+        })
     }
     companion object {
         const val TAG = "DashBoardFragment"

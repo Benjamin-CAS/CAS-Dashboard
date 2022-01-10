@@ -29,5 +29,9 @@
     <string name="time">
         Last Updated On:
     </string>
-
+    <string name="good_air_status_txt">Good</string>
+    <string name="moderate_air_status_txt">Moderate</string>
+    <string name="aqi_status_unhealthy_sensitive_groups_abbrev">Unhealthy F.S.G</string>
+    <string name="danger_txt">Bad</string>
+    <string name="loading_graph_data">Loading data …</string>
 </resources>

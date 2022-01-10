@@ -1,5 +1,7 @@
 package com.cas.casdashboard.https.request
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author Benjamin
  * @description:
@@ -34,4 +36,20 @@ data class RequestGetInterfaceDetails(
     val d:String,
     val user:String,
     val password:String
+)
+data class LocDateGetIpadHistory(
+    @SerializedName("c")
+    val c: String,
+    @SerializedName("d")
+    val d: String = "",
+    @SerializedName("h")
+    val h: String = "",
+    @SerializedName("l")
+    val l: String,
+    @SerializedName("password")
+    val password: String,
+    @SerializedName("user")
+    val user: String,
+    @SerializedName("w")
+    val w: String = ""
 )

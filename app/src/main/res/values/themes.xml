@@ -21,7 +21,6 @@
     </style>
     <style name="Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/btn_light_text_color</item>
-
     </style>
     <style name="TextView" parent="Widget.MaterialComponents.TextView">
         <item name="android:textColor">@color/light_text_color</item>
